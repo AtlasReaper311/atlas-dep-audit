@@ -1,0 +1,7 @@
+{
+  "schema": "atlas-supply-chain-policy/v1",
+  "fail_on": "critical",
+  "require_immutable_actions": true,
+  "require_container_digest": false,
+  "unknown_license_severity": "info"
+}

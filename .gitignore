@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+work/
+reports/
+sbom/
+provenance/
+.env
+.DS_Store
