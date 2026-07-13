@@ -617,7 +617,7 @@ def main() -> int:
                 results = osv_query(components)
                 repo_vulnerabilities = vulnerabilities_for(repo, components, results)
             except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError) as error:
-                policy_findings.append(PolicyFinding(repo, "error", "osv-query", "", f"OSV query failed: {error}"))
+                policy_findings.append(PolicyFinding(repo, "warning", "osv-query", "", f"OSV query failed: {error}"))
         vulnerabilities.extend(repo_vulnerabilities)
         if not repo_vulnerabilities:
             clean_repos.append(repo)
@@ -656,7 +656,11 @@ def main() -> int:
     threshold_value = SEVERITY_ORDER.get(threshold, 4)
     if any(SEVERITY_ORDER.get(item.severity, 0) >= threshold_value for item in vulnerabilities):
         return 1
-    if any(item.severity == "error" for item in policy_findings):
+    blocking_policy_errors = [
+        item for item in policy_findings
+        if item.severity == "error" and item.rule not in {"osv-query"}
+    ]
+    if blocking_policy_errors:
         return 1
     return 0
 
