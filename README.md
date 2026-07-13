@@ -60,6 +60,21 @@ Critical known vulnerabilities fail the scheduled workflow. High, moderate, low,
 
 GitHub Actions refs that are not pinned to full commit SHAs are warnings during adoption. Container bases that are tag-pinned rather than digest-pinned are informational until image builds become part of this audit.
 
+## Documentation drift
+
+A second scheduled workflow compares the canonical estate manifest, repository READMEs, and live Worker `/_meta` contracts. It detects dead metadata URLs, duplicate route ownership, version disagreement, undocumented live endpoints, stale documented endpoints, and dependency claims that no longer match repository manifests.
+
+The supply-chain parser also reads `poetry.lock` and `Pipfile.lock`, and prefers Poetry lock data over matching `pyproject.toml` declarations.
+
+The workflow writes `doc-drift-reports/report.json` and `doc-drift-reports/summary.md`, retains them as a 90-day artifact, and sends one consolidated warning through `atlas-notify` when drift exists. Findings are the output of the check and do not fail the workflow. An unreadable manifest or other operational failure does fail the workflow so a partial scan cannot appear healthy.
+
+Local validation:
+
+```bash
+python3 -m py_compile estate.py notify_client.py doc_drift.py
+python3 doc_drift.py --selftest
+```
+
 ## How it fits into Atlas Systems
 
 This repository consumes the canonical map from [`atlas-api-public`](https://github.com/AtlasReaper311/atlas-api-public), scans the repository estate listed there, reports through [`atlas-notify`](https://github.com/AtlasReaper311/atlas-notify), and complements the conformance and change-impact workflows in [`atlas-infra`](https://github.com/AtlasReaper311/atlas-infra).

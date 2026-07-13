@@ -1,0 +1,48 @@
+name: Estate documentation drift
+
+on:
+  schedule:
+    - cron: "17 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: estate-doc-drift
+  cancel-in-progress: false
+
+jobs:
+  drift:
+    name: Compare manifest, READMEs, and live metadata
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out audit repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Validate watchdog source
+        run: |
+          python3 -m py_compile estate.py
+          python3 -m py_compile notify_client.py
+          python3 -m py_compile doc_drift.py
+          python3 doc_drift.py --selftest
+
+      - name: Check documentation drift
+        id: drift
+        env:
+          GH_DIGEST_PAT: ${{ secrets.GH_DIGEST_PAT }}
+          NOTIFY_TOKEN: ${{ secrets.NOTIFY_TOKEN }}
+          NOTIFY_SIGNAL_CLASS: infra_health
+        run: |
+          python3 doc_drift.py --report-dir doc-drift-reports
+          cat doc-drift-reports/summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload drift evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: estate-doc-drift-${{ github.run_id }}
+          path: doc-drift-reports
+          if-no-files-found: error
+          retention-days: 90
