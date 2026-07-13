@@ -248,6 +248,72 @@ def pyproject_components(path: Path, repo_root: Path, repo: str) -> tuple[list[C
     return components, findings
 
 
+
+def poetry_lock_components(path: Path, repo_root: Path) -> tuple[list[Component], list[PolicyFinding]]:
+    """Read exact PyPI versions from Poetry's lockfile."""
+    payload = tomllib.loads(path.read_text(encoding="utf-8"))
+    relative = str(path.relative_to(repo_root))
+    components: list[Component] = []
+    for entry in payload.get("package", []):
+        if not isinstance(entry, dict):
+            continue
+        name = str(entry.get("name") or "").lower().replace("_", "-")
+        version = str(entry.get("version") or "")
+        if not name or not version:
+            continue
+        category = str(entry.get("category") or "main")
+        groups = entry.get("groups") or []
+        development = category == "dev" or "dev" in groups
+        components.append(
+            Component(
+                ecosystem="PyPI",
+                name=name,
+                version=version,
+                purl=f"pkg:pypi/{urllib.parse.quote(name)}@{version}",
+                scope="development" if development else "required",
+                license="UNKNOWN",
+                source_file=relative,
+            )
+        )
+    return components, []
+
+
+def pipfile_lock_components(path: Path, repo_root: Path) -> tuple[list[Component], list[PolicyFinding]]:
+    """Read exact PyPI versions from Pipenv's lockfile."""
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    relative = str(path.relative_to(repo_root))
+    components: list[Component] = []
+    findings: list[PolicyFinding] = []
+    for section, scope in (("default", "required"), ("develop", "development")):
+        for raw_name, entry in (payload.get(section) or {}).items():
+            value = entry if isinstance(entry, str) else (entry or {}).get("version", "")
+            value = str(value)
+            if not value.startswith("=="):
+                findings.append(
+                    PolicyFinding(
+                        str(repo_root.name),
+                        "warning",
+                        "python-unpinned",
+                        relative,
+                        f"Pipfile.lock entry is not an exact == pin: {raw_name} {value}",
+                    )
+                )
+                continue
+            name = str(raw_name).lower().replace("_", "-")
+            version = value[2:]
+            components.append(
+                Component(
+                    ecosystem="PyPI",
+                    name=name,
+                    version=version,
+                    purl=f"pkg:pypi/{urllib.parse.quote(name)}@{version}",
+                    scope=scope,
+                    license="UNKNOWN",
+                    source_file=relative,
+                )
+            )
+    return components, findings
+
 def parse_actions(repo_root: Path, repo: str) -> tuple[list[dict[str, str]], list[PolicyFinding]]:
     actions: list[dict[str, str]] = []
     findings: list[PolicyFinding] = []
@@ -308,8 +374,25 @@ def discover_components(repo_root: Path, repo: str) -> tuple[list[Component], li
         found, local_findings = requirements_components(path, repo_root, repo)
         components.extend(found)
         findings.extend(local_findings)
+
+    for path in repo_root.rglob("poetry.lock"):
+        if ".git" in path.parts or ".venv" in path.parts:
+            continue
+        manifests.append(path)
+        found, local_findings = poetry_lock_components(path, repo_root)
+        components.extend(found)
+        findings.extend(local_findings)
+    for path in repo_root.rglob("Pipfile.lock"):
+        if ".git" in path.parts or ".venv" in path.parts:
+            continue
+        manifests.append(path)
+        found, local_findings = pipfile_lock_components(path, repo_root)
+        components.extend(found)
+        findings.extend(local_findings)
     for path in repo_root.rglob("pyproject.toml"):
         if ".git" in path.parts or ".venv" in path.parts:
+            continue
+        if (path.parent / "poetry.lock").exists():
             continue
         manifests.append(path)
         found, local_findings = pyproject_components(path, repo_root, repo)
