@@ -43,7 +43,12 @@ This is a source SBOM. It inventories dependencies committed in `package-lock.js
 
 ## Credentials
 
-The workflow reuses `GH_DIGEST_PAT`, the existing read-only cross-repository token. No new GitHub token is required. `NOTIFY_TOKEN` is optional and only delivers the consolidated report.
+The supply-chain path reuses `GH_DIGEST_PAT`, the existing read-only
+cross-repository token. Secret watch remains deterministic without a new token;
+optional live names-only comparison uses the separate
+`SECRET_WATCH_GITHUB_TOKEN` with selected-repository `Metadata: read` and
+`Secrets: read` only. `NOTIFY_TOKEN` is optional and only delivers the
+consolidated report.
 
 ## Local use
 
@@ -93,6 +98,21 @@ python3 contract_validation.py --contracts-root ../atlas-infra
 
 Architecture, failure behavior, migration order, and rollback are documented
 in [`docs/control-plane-contract-validation.md`](docs/control-plane-contract-validation.md).
+
+## Secret watch
+
+The same audit path now consumes the names-only declaration from
+`atlas-infra/policy/secret-watch.json`, validates declaration quality and
+classification, optionally compares GitHub Actions secret names, evaluates
+owner-attested rotation policy, and scans tracked text files for conservative
+plaintext credential patterns. It writes `reports/secret-watch.json` and
+`reports/secret-watch.md`; every emitted record conforms to Finding v1.
+
+The scanner never reports matched text or a value-derived hash. GitHub mode
+calls read-only metadata list endpoints and distinguishes disabled,
+unavailable, partial, and available coverage. Tests use only local metadata
+fixtures. See [`docs/secret-watch.md`](docs/secret-watch.md) for the CLI,
+failure modes, permissions, and no-values boundary.
 
 ## How it fits into Atlas Systems
 
