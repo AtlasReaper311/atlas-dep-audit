@@ -21,6 +21,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+import contract_validation
+
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 USES_LINE = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
 REQUIREMENT = re.compile(r"^([A-Za-z0-9_.-]+)\s*==\s*([^\s;]+)")
@@ -610,6 +612,7 @@ def write_provenance(
     actions: list[dict[str, str]],
     container_bases: list[dict[str, str]],
     sbom_path: Path,
+    contract_result: contract_validation.ContractValidationResult | None,
 ) -> None:
     payload = {
         "schema": "atlas-build-provenance/v1",
@@ -627,6 +630,8 @@ def write_provenance(
         "container_bases": container_bases,
         "sbom": {"path": sbom_path.name, "sha256": sha256_file(sbom_path)},
     }
+    if contract_result is not None:
+        payload["control_plane_contract_validation"] = contract_result.provenance()
     output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
@@ -675,9 +680,20 @@ def main() -> int:
         components, component_findings, manifests = discover_components(repo_root, repo)
         actions, action_findings = parse_actions(repo_root, repo)
         container_bases, container_findings = parse_container_bases(repo_root, repo)
+        contract_result = contract_validation.validate_checkout(repo, repo_root)
         policy_findings.extend(component_findings)
         policy_findings.extend(action_findings)
         policy_findings.extend(container_findings)
+        if contract_result is not None and contract_result.status == "failed":
+            policy_findings.append(
+                PolicyFinding(
+                    repo,
+                    "error",
+                    "control-plane-contract-validation",
+                    "contracts/v1",
+                    contract_result.error,
+                )
+            )
 
         safe_name = repo.replace("/", "__")
         sbom_path = sbom_dir / f"{safe_name}.cdx.json"
@@ -692,6 +708,7 @@ def main() -> int:
             actions,
             container_bases,
             sbom_path,
+            contract_result,
         )
 
         repo_vulnerabilities: list[Vulnerability] = []
