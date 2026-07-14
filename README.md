@@ -75,6 +75,25 @@ python3 -m py_compile estate.py notify_client.py doc_drift.py
 python3 doc_drift.py --selftest
 ```
 
+## Control-plane contract assurance
+
+The existing audit path now validates the eight shared v1 contracts when it
+scans the allowlisted `AtlasReaper311/atlas-infra` checkout. The canonical
+validator runs with credential-bearing environment variables removed, a
+bounded timeout, and no dependency installation. Its stable summary is added
+to `atlas-infra` provenance; any validation failure is a blocking policy
+finding. A missing canonical v1 contract directory also fails closed, which is
+why `atlas-infra` must merge before this integration.
+
+Local cross-repository validation is network-free:
+
+```bash
+python3 contract_validation.py --contracts-root ../atlas-infra
+```
+
+Architecture, failure behavior, migration order, and rollback are documented
+in [`docs/control-plane-contract-validation.md`](docs/control-plane-contract-validation.md).
+
 ## How it fits into Atlas Systems
 
 This repository consumes the canonical map from [`atlas-api-public`](https://github.com/AtlasReaper311/atlas-api-public), scans the repository estate listed there, reports through [`atlas-notify`](https://github.com/AtlasReaper311/atlas-notify), and complements the conformance and change-impact workflows in [`atlas-infra`](https://github.com/AtlasReaper311/atlas-infra).

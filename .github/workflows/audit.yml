@@ -24,6 +24,7 @@ jobs:
       - name: Validate source
         run: |
           python3 -m py_compile audit.py
+          python3 -m py_compile contract_validation.py
           python3 -m py_compile notify.py
           python3 -m unittest discover -s tests -v
 
