@@ -19,13 +19,23 @@ jobs:
     timeout-minutes: 45
     steps:
       - name: Check out audit repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Check out canonical secret policy and Finding contract
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: AtlasReaper311/atlas-infra
+          path: .atlas-infra
+          persist-credentials: false
 
       - name: Validate source
+        env:
+          ATLAS_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra
         run: |
           python3 -m py_compile audit.py
           python3 -m py_compile contract_validation.py
           python3 -m py_compile notify.py
+          python3 -m py_compile secret_watch.py
           python3 -m unittest discover -s tests -v
 
       - name: Audit declared estate repositories
@@ -33,13 +43,21 @@ jobs:
         continue-on-error: true
         env:
           GH_DIGEST_PAT: ${{ secrets.GH_DIGEST_PAT }}
+          SECRET_WATCH_GITHUB_TOKEN: ${{ secrets.SECRET_WATCH_GITHUB_TOKEN }}
         run: |
-          python3 audit.py             --manifest https://raw.githubusercontent.com/AtlasReaper311/atlas-api-public/main/data/estate.manifest.json             --policy policy.json             --work-dir work             --report-dir reports             --sbom-dir sbom             --provenance-dir provenance
+          python3 audit.py \
+            --manifest https://raw.githubusercontent.com/AtlasReaper311/atlas-api-public/main/data/estate.manifest.json \
+            --policy policy.json \
+            --work-dir work \
+            --report-dir reports \
+            --sbom-dir sbom \
+            --provenance-dir provenance \
+            --secret-watch-live
           cat reports/summary.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload audit evidence
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: estate-supply-chain-${{ github.run_id }}
           path: |
@@ -50,13 +68,19 @@ jobs:
           retention-days: 90
 
       - name: Report one consolidated result
-        if: always() && (steps.audit.outputs.total != '0' || steps.audit.outputs.policy_findings != '0')
+        if: always() && (steps.audit.outputs.total != '0' || steps.audit.outputs.policy_findings != '0' || steps.audit.outputs.secret_findings != '0')
         continue-on-error: true
         env:
           NOTIFY_TOKEN: ${{ secrets.NOTIFY_TOKEN }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          python3 notify.py             --critical "${{ steps.audit.outputs.critical || 0 }}"             --high "${{ steps.audit.outputs.high || 0 }}"             --total "${{ steps.audit.outputs.total || 0 }}"             --policy-findings "${{ steps.audit.outputs.policy_findings || 0 }}"             --url "$RUN_URL"
+          python3 notify.py \
+            --critical "${{ steps.audit.outputs.critical || 0 }}" \
+            --high "${{ steps.audit.outputs.high || 0 }}" \
+            --total "${{ steps.audit.outputs.total || 0 }}" \
+            --policy-findings "${{ steps.audit.outputs.policy_findings || 0 }}" \
+            --secret-findings "${{ steps.audit.outputs.secret_findings || 0 }}" \
+            --url "$RUN_URL"
 
       - name: Preserve blocking result
         if: steps.audit.outcome == 'failure'

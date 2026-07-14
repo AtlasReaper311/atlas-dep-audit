@@ -16,6 +16,7 @@ def main() -> int:
     parser.add_argument("--high", type=int, default=0)
     parser.add_argument("--total", type=int, default=0)
     parser.add_argument("--policy-findings", type=int, default=0)
+    parser.add_argument("--secret-findings", type=int, default=0)
     parser.add_argument("--url", default="")
     args = parser.parse_args()
 
@@ -25,13 +26,14 @@ def main() -> int:
         return 0
     if args.critical > 0:
         level = "failure"
-    elif args.high > 0 or args.policy_findings > 0:
+    elif args.high > 0 or args.policy_findings > 0 or args.secret_findings > 0:
         level = "warning"
     else:
         level = "info"
     message = (
         f"{args.total} known vulnerabilities, including {args.critical} critical and "
-        f"{args.high} high; {args.policy_findings} supply-chain policy findings."
+        f"{args.high} high; {args.policy_findings} supply-chain policy findings; "
+        f"{args.secret_findings} redacted secret-watch findings."
     )
     request = urllib.request.Request(
         "https://api.atlas-systems.uk/notify",

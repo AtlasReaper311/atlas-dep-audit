@@ -1,0 +1,13 @@
+{
+  "schema": "atlas-secret-watch/offline-audit-manifest/v1",
+  "repositories": [
+    {
+      "name": "atlas-dep-audit",
+      "url": "https://github.com/AtlasReaper311/atlas-dep-audit"
+    },
+    {
+      "name": "atlas-infra",
+      "url": "https://github.com/AtlasReaper311/atlas-infra"
+    }
+  ]
+}

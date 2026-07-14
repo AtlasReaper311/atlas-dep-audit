@@ -1,0 +1,20 @@
+{
+  "schema_version": "atlas-secret-watch/metadata-fixture/v1",
+  "repositories": [
+    {
+      "repository": "AtlasReaper311/atlas-dep-audit",
+      "environment": null,
+      "secret_names": [
+        "GH_DIGEST_PAT"
+      ]
+    },
+    {
+      "repository": "AtlasReaper311/atlas-infra",
+      "environment": null,
+      "secret_names": [
+        "CORPUS_SECRET",
+        "GH_DIGEST_PAT"
+      ]
+    }
+  ]
+}

@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Any
 
 import contract_validation
+import secret_watch
 
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 USES_LINE = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
@@ -561,6 +562,7 @@ def render_summary(
     clean_repos: list[str],
     vulnerabilities: list[Vulnerability],
     policy_findings: list[PolicyFinding],
+    secret_watch_report: dict[str, Any] | None = None,
 ) -> str:
     severity_counts = Counter(item.severity for item in vulnerabilities)
     lines = [
@@ -600,7 +602,10 @@ def render_summary(
             "Each repository has a CycloneDX source SBOM and a provenance record containing the commit, manifest hashes, action refs, and container base refs. These records describe source and build inputs. They do not claim to inventory operating-system packages inside an image that was not built during this run.",
         ]
     )
-    return "\n".join(lines) + "\n"
+    rendered = "\n".join(lines) + "\n"
+    if secret_watch_report is not None:
+        rendered += "\n" + secret_watch.render_summary(secret_watch_report)
+    return rendered
 
 
 def write_provenance(
@@ -644,6 +649,11 @@ def main() -> int:
     parser.add_argument("--sbom-dir", default="sbom")
     parser.add_argument("--provenance-dir", default="provenance")
     parser.add_argument("--skip-osv", action="store_true")
+    parser.add_argument("--local-repositories-root", type=Path)
+    parser.add_argument("--secret-policy", type=Path)
+    parser.add_argument("--secret-metadata-fixture", type=Path)
+    parser.add_argument("--secret-watch-live", action="store_true")
+    parser.add_argument("--secret-watch-now")
     args = parser.parse_args()
 
     manifest = load_json(args.manifest)
@@ -667,15 +677,31 @@ def main() -> int:
     vulnerabilities: list[Vulnerability] = []
     policy_findings: list[PolicyFinding] = []
     clean_repos: list[str] = []
+    repository_roots: dict[str, Path] = {}
 
     for repo in repos:
         print(f"Scanning {repo}", flush=True)
-        try:
-            repo_root = clone_repository(repo, work_dir, token)
-        except subprocess.CalledProcessError as error:
-            detail = (error.stderr or str(error)).strip().replace(token, "[redacted]") if token else (error.stderr or str(error)).strip()
-            policy_findings.append(PolicyFinding(repo, "error", "clone", "", detail[:300]))
-            continue
+        if args.local_repositories_root:
+            repo_root = args.local_repositories_root.resolve() / repo.split("/", 1)[1]
+            if not (repo_root / ".git").exists():
+                policy_findings.append(
+                    PolicyFinding(
+                        repo,
+                        "error",
+                        "local-checkout",
+                        "",
+                        "Declared repository is missing from the offline checkout root.",
+                    )
+                )
+                continue
+        else:
+            try:
+                repo_root = clone_repository(repo, work_dir, token)
+            except subprocess.CalledProcessError as error:
+                detail = (error.stderr or str(error)).strip().replace(token, "[redacted]") if token else (error.stderr or str(error)).strip()
+                policy_findings.append(PolicyFinding(repo, "error", "clone", "", detail[:300]))
+                continue
+        repository_roots[repo] = repo_root
         commit = run(["git", "rev-parse", "HEAD"], cwd=repo_root)
         components, component_findings, manifests = discover_components(repo_root, repo)
         actions, action_findings = parse_actions(repo_root, repo)
@@ -722,7 +748,39 @@ def main() -> int:
         if not repo_vulnerabilities:
             clean_repos.append(repo)
 
-    summary = render_summary(repos, clean_repos, vulnerabilities, policy_findings)
+    canonical_root = repository_roots.get(contract_validation.CONTRACT_OWNER)
+    if args.secret_policy:
+        secret_policy_path = args.secret_policy.resolve()
+    elif canonical_root is not None:
+        secret_policy_path = canonical_root / "policy" / "secret-watch.json"
+    else:
+        secret_policy_path = work_dir / "atlas-infra" / "policy" / "secret-watch.json"
+    live_client: secret_watch.GitHubMetadataClient | None = None
+    if args.secret_watch_live:
+        secret_token = os.getenv(secret_watch.TOKEN_ENVIRONMENT_NAME, "")
+        if secret_token:
+            live_client = secret_watch.GitHubMetadataClient(secret_token)
+    secret_watch_report = secret_watch.run_secret_watch(
+        secret_policy_path,
+        repository_roots,
+        metadata_fixture=args.secret_metadata_fixture.resolve()
+        if args.secret_metadata_fixture
+        else None,
+        live_client=live_client,
+        detected_at=args.secret_watch_now,
+    )
+    secret_watch.write_report(report_dir / "secret-watch.json", secret_watch_report)
+    (report_dir / "secret-watch.md").write_text(
+        secret_watch.render_summary(secret_watch_report), encoding="utf-8"
+    )
+
+    summary = render_summary(
+        repos,
+        clean_repos,
+        vulnerabilities,
+        policy_findings,
+        secret_watch_report,
+    )
     summary_path = report_dir / "summary.md"
     summary_path.write_text(summary, encoding="utf-8")
     machine_path = report_dir / "report.json"
@@ -734,6 +792,7 @@ def main() -> int:
                 "clean_repositories": len(clean_repos),
                 "vulnerabilities": [asdict(item) for item in vulnerabilities],
                 "policy_findings": [asdict(item) for item in policy_findings],
+                "secret_watch": secret_watch_report,
             },
             indent=2,
             sort_keys=True,
@@ -751,6 +810,7 @@ def main() -> int:
             handle.write(f"high={counts.get('high', 0)}\n")
             handle.write(f"total={len(vulnerabilities)}\n")
             handle.write(f"policy_findings={len(policy_findings)}\n")
+            handle.write(f"secret_findings={len(secret_watch_report['findings'])}\n")
 
     threshold = str(policy.get("fail_on", "critical")).lower()
     threshold_value = SEVERITY_ORDER.get(threshold, 4)
@@ -761,6 +821,8 @@ def main() -> int:
         if item.severity == "error" and item.rule not in {"osv-query"}
     ]
     if blocking_policy_errors:
+        return 1
+    if secret_watch_report["blocking"]:
         return 1
     return 0
 
