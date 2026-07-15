@@ -1,0 +1,36 @@
+name: Pull request CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.repository }}-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  assurance-validation:
+    name: Supply-chain unit and contract validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Check out the pinned canonical contracts
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: AtlasReaper311/atlas-infra
+          ref: 8d1ca6625711f76ccd9b6ebf40bf8ebebfac1232
+          path: .atlas-infra
+          persist-credentials: false
+
+      - name: Compile and run offline assurance tests
+        env:
+          ATLAS_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra
+        run: |
+          python3 -m py_compile audit.py contract_validation.py doc_drift.py estate.py notify.py notify_client.py secret_watch.py
+          python3 -m unittest discover -s tests -v
+          python3 doc_drift.py --selftest
