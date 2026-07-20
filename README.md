@@ -7,8 +7,7 @@
 ```
 ┌─────────────────────────────────────────────┐
 │  ATLAS SYSTEMS // atlas-dep-audit           │
-│  source SBOMs, known vulnerabilities,       │
-│  action pins, and build provenance          │
+│  source SBOMs, vulnerabilities, provenance  │
 └─────────────────────────────────────────────┘
 ```
 
@@ -17,108 +16,118 @@
 ![Vulnerabilities](https://img.shields.io/badge/database-osv-4ade80?style=flat-square&labelColor=0a0a0f)
 ![Cost](https://img.shields.io/badge/cost-%C2%A30-aaa9a0?style=flat-square&labelColor=0a0a0f)
 
-A weekly supply-chain audit over every repository declared in `estate.manifest.json`. It clones each repository read-only, generates a CycloneDX source SBOM from npm and Python manifests, queries the Open Source Vulnerabilities database, records immutable build inputs, checks GitHub Action refs, inventories container base references, and publishes one consolidated report.
+Supply-chain assurance for Atlas Systems source repositories. Public repositories are scanned by the scheduled public workflow; private repositories call the same audit capability from their own authenticated repository so their evidence remains private while the checks stay consistent.
+
+## Public audit
+
+The weekly public workflow reads `atlas-api-public/data/public-repositories.json`, clones only repositories explicitly reported as public, and produces:
+
+- CycloneDX 1.5 source SBOMs.
+- OSV vulnerability findings.
+- immutable source and build provenance.
+- GitHub Action pin checks.
+- container base reference checks.
+- public secret-policy assurance.
+- one consolidated public-estate report.
+
+The public audit never discovers private repositories through an account-wide token. Its scan manifest is built from the generated public repository inventory.
+
+## Private repository assurance
+
+Private Atlas Systems repositories use the reusable workflow:
+
+```yaml
+jobs:
+  supply-chain:
+    uses: AtlasReaper311/atlas-dep-audit/.github/workflows/private-repository-audit.yml@<immutable-commit>
+```
+
+The called workflow runs inside the private caller repository. It checks out that caller, checks out a pinned revision of the audit tooling, then runs `private_repository_audit.py` against the local authenticated checkout.
+
+Private evidence is uploaded as an artifact of the private caller workflow, not the public audit repository. The public repository therefore contains the audit mechanism without containing a central inventory, report, or artifact naming private repositories.
+
+The source-local private audit includes:
+
+- CycloneDX source SBOM generation.
+- OSV vulnerability lookup.
+- Action pin policy checks.
+- container base reference checks.
+- build provenance.
+
+Private repository governance is validated separately through the reusable workflow owned by `atlas-infra`. Native repository CI, Dependabot, and GitHub security controls remain source-owned.
 
 ## Outputs
 
-For every repository:
+For each scanned repository:
 
 - `sbom/<repo>.cdx.json`: CycloneDX 1.5 source dependency inventory.
 - `provenance/<repo>.provenance.json`: commit, manifest hashes, Action refs, container bases, workflow run, and SBOM digest.
 
-For the full estate:
+For each workflow scope:
 
-- `reports/summary.md`: human comparison grouped by severity and repository.
-- `reports/report.json`: machine-readable findings for later dashboards or trend analysis.
+- `reports/summary.md`: human-readable findings.
+- `reports/report.json`: machine-readable findings.
 
-The workflow uploads one 90-day evidence artifact and sends one `atlas-notify` event only when a finding exists. Repositories with no known vulnerability are counted but not listed individually.
+Public workflow artifacts contain public repositories only. Private workflow artifacts remain attached to the authenticated private caller.
 
 ## Vulnerability source
 
-The audit uses [OSV](https://osv.dev), an open vulnerability schema and public query API maintained for package ecosystem vulnerability data. Queries use exact package URLs and installed versions from committed lockfiles. Fixed versions are extracted from OSV range events when publishers provide them.
+The audit uses [OSV](https://osv.dev), an open vulnerability schema and public query API. Queries use exact package URLs and installed versions from committed dependency manifests and lockfiles. Fixed versions are extracted from OSV ranges when publishers provide them.
+
+Critical vulnerabilities fail the audit by default. Lower severities remain visible unless policy raises the threshold. Operational failures also fail rather than producing an incomplete green report.
 
 ## Scope boundary
 
-This is a source SBOM. It inventories dependencies committed in `package-lock.json`, `requirements.txt`, and `pyproject.toml`. It also records Docker base image references and whether they are digest-pinned. It does not claim to inventory operating-system packages inside an image that was not built during the run.
+This is a source SBOM. It inventories dependencies committed in supported npm and Python dependency files, Action refs, and container base references. It does not claim to inventory operating-system packages inside an image that was not built during the run.
 
-## Credentials
-
-The supply-chain path reuses `GH_DIGEST_PAT`, the existing read-only
-cross-repository token. Secret watch remains deterministic without a new token;
-optional live names-only comparison uses the separate
-`SECRET_WATCH_GITHUB_TOKEN` with selected-repository `Metadata: read` and
-`Secrets: read` only. `NOTIFY_TOKEN` is optional and only delivers the
-consolidated report.
+Repository visibility controls where evidence is retained, not whether the repository receives assurance.
 
 ## Local use
 
+Public multi-repository audit:
+
 ```bash
-python3 -m unittest discover -s tests -v
-python3 audit.py   --manifest ../atlas-api-public/data/estate.manifest.json   --skip-osv
+python3 audit.py \
+  --manifest public-scan-manifest.json \
+  --policy policy.json \
+  --skip-osv
 ```
 
-`--skip-osv` proves manifest parsing, repository cloning, SBOM generation, provenance, and policy checks without making vulnerability API requests.
+Single checked-out repository audit:
 
-## Failure policy
+```bash
+python3 private_repository_audit.py \
+  --repository AtlasReaper311/example-repository \
+  --repository-root ../example-repository \
+  --policy policy.json \
+  --skip-osv
+```
 
-Critical known vulnerabilities fail the scheduled workflow. High, moderate, low, and unknown findings remain visible in the report and notification. Repository clone failures and OSV query failures also fail, because an incomplete audit must not appear green.
-
-GitHub Actions refs that are not pinned to full commit SHAs are warnings during adoption. Container bases that are tag-pinned rather than digest-pinned are informational until image builds become part of this audit.
+The example identity is illustrative; private repository identities are not committed to this public repository.
 
 ## Documentation drift
 
-A second scheduled workflow compares the canonical estate manifest, repository READMEs, and live Worker `/_meta` contracts. It detects dead metadata URLs, duplicate route ownership, version disagreement, undocumented live endpoints, stale documented endpoints, and dependency claims that no longer match repository manifests.
+The documentation drift workflow compares the declared public manifest, public repository documentation, and approved public Worker metadata. It detects dead metadata URLs, duplicate route ownership, version disagreement, undocumented public endpoints, stale documented endpoints, and dependency claims that no longer match public repository manifests.
 
-The supply-chain parser also reads `poetry.lock` and `Pipfile.lock`, and prefers Poetry lock data over matching `pyproject.toml` declarations.
-
-The workflow writes `doc-drift-reports/report.json` and `doc-drift-reports/summary.md`, retains them as a 90-day artifact, and sends one consolidated warning through `atlas-notify` when drift exists. Findings are the output of the check and do not fail the workflow. An unreadable manifest or other operational failure does fail the workflow so a partial scan cannot appear healthy.
-
-Local validation:
-
-```bash
-python3 -m py_compile estate.py notify_client.py doc_drift.py
-python3 doc_drift.py --selftest
-```
+Private repositories do not participate in the public documentation-drift report because they are intentionally absent from public architecture documentation.
 
 ## Control-plane contract assurance
 
-The existing audit path now validates the eight shared v1 contracts when it
-scans the allowlisted `AtlasReaper311/atlas-infra` checkout. The canonical
-validator runs with credential-bearing environment variables removed, a
-bounded timeout, and no dependency installation. Its stable summary is added
-to `atlas-infra` provenance; any validation failure is a blocking policy
-finding. A missing canonical v1 contract directory also fails closed, which is
-why `atlas-infra` must merge before this integration.
+The public audit validates the shared v1 contracts when it scans the allowlisted public `atlas-infra` checkout. The canonical validator runs without credential-bearing environment variables, with bounded execution time and no dependency installation.
 
-Local cross-repository validation is network-free:
-
-```bash
-python3 contract_validation.py --contracts-root ../atlas-infra
-```
-
-Architecture, failure behavior, migration order, and rollback are documented
-in [`docs/control-plane-contract-validation.md`](docs/control-plane-contract-validation.md).
+Private governance declarations are validated in the repository that owns them, not copied into this audit repository.
 
 ## Secret watch
 
-The same audit path now consumes the names-only declaration from
-`atlas-infra/policy/secret-watch.json`, validates declaration quality and
-classification, optionally compares GitHub Actions secret names, evaluates
-owner-attested rotation policy, and scans tracked text files for conservative
-plaintext credential patterns. It writes `reports/secret-watch.json` and
-`reports/secret-watch.md`; every emitted record conforms to Finding v1.
+Public secret assurance consumes names-only public policy from `atlas-infra`. It never reports secret values or value-derived hashes. Optional GitHub metadata comparison uses a separate read-only token and distinguishes unavailable evidence from healthy evidence.
 
-The scanner never reports matched text or a value-derived hash. GitHub mode
-calls read-only metadata list endpoints and distinguishes disabled,
-unavailable, partial, and available coverage. Tests use only local metadata
-fixtures. See [`docs/secret-watch.md`](docs/secret-watch.md) for the CLI,
-failure modes, permissions, and no-values boundary.
+Private repositories retain their source-owned GitHub security controls and private workflow evidence rather than publishing secret-policy identities through this repository.
 
 ## How it fits into Atlas Systems
 
-This repository consumes the canonical map from [`atlas-api-public`](https://github.com/AtlasReaper311/atlas-api-public), scans the repository estate listed there, reports through [`atlas-notify`](https://github.com/AtlasReaper311/atlas-notify), and complements the conformance and change-impact workflows in [`atlas-infra`](https://github.com/AtlasReaper311/atlas-infra).
+`atlas-dep-audit` provides one audit implementation with two evidence locations: public estate assurance in the public audit repository, and private source-local assurance inside authenticated caller repositories. Public architecture remains bounded while private repositories keep equivalent dependency and provenance checks.
 
-A dependency list says what the code asked for. An SBOM plus provenance says what was present, where it came from, and which commit shipped the claim.
+The transferable principle is to move the evidence boundary with the data: shared tooling can be public without forcing every audited target to become public inventory.
 
 ---
 
