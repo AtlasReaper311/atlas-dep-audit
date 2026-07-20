@@ -1,0 +1,60 @@
+name: Private repository supply-chain audit
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.repository }}-private-supply-chain-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: Private supply-chain assurance
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out caller repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
+        with:
+          path: target
+          persist-credentials: false
+
+      - name: Check out pinned audit tooling
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
+        with:
+          repository: AtlasReaper311/atlas-dep-audit
+          ref: 5a87c6cea1f8506b24be9fc94d3f22c593340ca8
+          path: .audit-tooling
+          persist-credentials: false
+
+      - name: Validate audit tooling
+        working-directory: .audit-tooling
+        run: |
+          set -euo pipefail
+          python3 -m py_compile audit.py private_repository_audit.py
+
+      - name: Audit caller repository
+        id: audit
+        working-directory: .audit-tooling
+        run: |
+          set -euo pipefail
+          python3 private_repository_audit.py \
+            --repository "${{ github.repository }}" \
+            --repository-root ../target \
+            --policy policy.json \
+            --report-dir private-evidence/reports \
+            --sbom-dir private-evidence/sbom \
+            --provenance-dir private-evidence/provenance
+          cat private-evidence/reports/summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload private assurance evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: private-supply-chain-${{ github.run_id }}
+          path: .audit-tooling/private-evidence
+          if-no-files-found: error
+          retention-days: 30
