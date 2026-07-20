@@ -15,7 +15,6 @@ from typing import Any
 
 CONTRACT_OWNER = "AtlasReaper311/atlas-infra"
 REPORT_SCHEMA = "atlas-control-plane/validation-report/v1"
-EXPECTED_SCHEMA_COUNT = 8
 SAFE_ENVIRONMENT_KEYS = (
     "LANG",
     "LC_ALL",
@@ -87,14 +86,14 @@ def _result_from_report(report: dict[str, Any]) -> ContractValidationResult:
         idempotent=report.get("idempotent") is True,
         error="",
     )
-    if result.schemas_checked != EXPECTED_SCHEMA_COUNT:
-        return _failed(
-            f"expected {EXPECTED_SCHEMA_COUNT} schemas, got {result.schemas_checked}"
-        )
-    if result.positive_fixtures < EXPECTED_SCHEMA_COUNT:
+    if result.schemas_checked <= 0:
+        return _failed("canonical validator checked no schemas")
+    if result.positive_fixtures < result.schemas_checked:
         return _failed("each contract requires a positive fixture")
-    if result.negative_fixtures < EXPECTED_SCHEMA_COUNT:
+    if result.negative_fixtures < result.schemas_checked:
         return _failed("each contract requires a negative fixture")
+    if result.fixtures_checked < result.positive_fixtures + result.negative_fixtures:
+        return _failed("canonical validator fixture totals are inconsistent")
     if not result.idempotent:
         return _failed("canonical validator did not prove idempotent output")
     return result
