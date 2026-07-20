@@ -1,7 +1,9 @@
+import io
 import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 import audit
 
@@ -54,6 +56,41 @@ class AuditTests(unittest.TestCase):
             actions, findings = audit.parse_actions(root, "owner/repo")
             self.assertEqual(2, len(actions))
             self.assertEqual(1, len(findings))
+
+    def test_osv_query_uses_versioned_purl_without_duplicate_version(self):
+        component = audit.Component(
+            ecosystem="npm",
+            name="example",
+            version="2.3.4",
+            purl="pkg:npm/example@2.3.4",
+            scope="required",
+            license="MIT",
+            source_file="package-lock.json",
+        )
+        captured = {}
+
+        class Response(io.BytesIO):
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc_value, traceback):
+                self.close()
+                return False
+
+        def fake_urlopen(request, timeout):
+            captured["timeout"] = timeout
+            captured["payload"] = json.loads(request.data.decode("utf-8"))
+            return Response(b'{"results":[{}]}')
+
+        with mock.patch("audit.urllib.request.urlopen", side_effect=fake_urlopen):
+            results = audit.osv_query([component])
+
+        self.assertEqual([{}], results)
+        self.assertEqual(90, captured["timeout"])
+        self.assertEqual(
+            {"queries": [{"package": {"purl": "pkg:npm/example@2.3.4"}}]},
+            captured["payload"],
+        )
 
     def test_cvss_v31_score(self):
         score = audit.cvss_v3_score(
