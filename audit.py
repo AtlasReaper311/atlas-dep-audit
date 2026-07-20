@@ -28,7 +28,14 @@ FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 USES_LINE = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
 REQUIREMENT = re.compile(r"^([A-Za-z0-9_.-]+)\s*==\s*([^\s;]+)")
 PEP508_PIN = re.compile(r"^([A-Za-z0-9_.-]+)(?:\[[^]]+\])?\s*==\s*([^\s;]+)")
-SEVERITY_ORDER = {"unknown": 0, "low": 1, "moderate": 2, "medium": 2, "high": 3, "critical": 4}
+SEVERITY_ORDER = {
+    "unknown": 0,
+    "low": 1,
+    "moderate": 2,
+    "medium": 2,
+    "high": 3,
+    "critical": 4,
+}
 
 
 @dataclass(frozen=True)
@@ -64,7 +71,10 @@ class PolicyFinding:
 
 def load_json(source: str) -> dict[str, Any]:
     if source.startswith("https://"):
-        request = urllib.request.Request(source, headers={"User-Agent": "atlas-dep-audit/1.0"})
+        request = urllib.request.Request(
+            source,
+            headers={"User-Agent": "atlas-dep-audit/1.0"},
+        )
         with urllib.request.urlopen(request, timeout=30) as response:
             return json.load(response)
     return json.loads(Path(source).read_text(encoding="utf-8"))
@@ -79,7 +89,13 @@ def sha256_file(path: Path) -> str:
 
 
 def run(command: list[str], cwd: Path | None = None) -> str:
-    completed = subprocess.run(command, cwd=cwd, check=True, capture_output=True, text=True)
+    completed = subprocess.run(
+        command,
+        cwd=cwd,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
     return completed.stdout.strip()
 
 
@@ -140,7 +156,10 @@ def npm_name_from_path(path: str, entry: dict[str, Any]) -> str | None:
     return parts[0]
 
 
-def npm_components(path: Path, repo_root: Path) -> tuple[list[Component], list[PolicyFinding]]:
+def npm_components(
+    path: Path,
+    repo_root: Path,
+) -> tuple[list[Component], list[PolicyFinding]]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     components: list[Component] = []
     findings: list[PolicyFinding] = []
@@ -167,6 +186,7 @@ def npm_components(path: Path, repo_root: Path) -> tuple[list[Component], list[P
                 )
             )
     else:
+
         def walk(dependencies: dict[str, Any]) -> None:
             for name, entry in dependencies.items():
                 if not isinstance(entry, dict):
@@ -188,22 +208,38 @@ def npm_components(path: Path, repo_root: Path) -> tuple[list[Component], list[P
                 child = entry.get("dependencies")
                 if isinstance(child, dict):
                     walk(child)
+
         walk(payload.get("dependencies", {}))
     return components, findings
 
 
-def requirements_components(path: Path, repo_root: Path, repo: str) -> tuple[list[Component], list[PolicyFinding]]:
+def requirements_components(
+    path: Path,
+    repo_root: Path,
+    repo: str,
+) -> tuple[list[Component], list[PolicyFinding]]:
     components: list[Component] = []
     findings: list[PolicyFinding] = []
     relative = str(path.relative_to(repo_root))
-    for line_number, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+    for line_number, raw in enumerate(
+        path.read_text(encoding="utf-8").splitlines(),
+        start=1,
+    ):
         line = raw.strip()
-        if not line or line.startswith("#") or line.startswith(("-r", "--", "git+", "http://", "https://")):
+        if not line or line.startswith("#") or line.startswith(
+            ("-r", "--", "git+", "http://", "https://")
+        ):
             continue
         match = REQUIREMENT.match(line)
         if not match:
             findings.append(
-                PolicyFinding(repo, "warning", "python-unpinned", relative, f"Line {line_number} is not pinned with ==: {line[:120]}")
+                PolicyFinding(
+                    repo,
+                    "warning",
+                    "python-unpinned",
+                    relative,
+                    f"Line {line_number} is not pinned with ==: {line[:120]}",
+                )
             )
             continue
         name, version = match.groups()
@@ -222,7 +258,11 @@ def requirements_components(path: Path, repo_root: Path, repo: str) -> tuple[lis
     return components, findings
 
 
-def pyproject_components(path: Path, repo_root: Path, repo: str) -> tuple[list[Component], list[PolicyFinding]]:
+def pyproject_components(
+    path: Path,
+    repo_root: Path,
+    repo: str,
+) -> tuple[list[Component], list[PolicyFinding]]:
     payload = tomllib.loads(path.read_text(encoding="utf-8"))
     dependencies = payload.get("project", {}).get("dependencies", [])
     components: list[Component] = []
@@ -232,7 +272,13 @@ def pyproject_components(path: Path, repo_root: Path, repo: str) -> tuple[list[C
         match = PEP508_PIN.match(str(dependency))
         if not match:
             findings.append(
-                PolicyFinding(repo, "warning", "python-unpinned", relative, f"Project dependency is not pinned with ==: {dependency}")
+                PolicyFinding(
+                    repo,
+                    "warning",
+                    "python-unpinned",
+                    relative,
+                    f"Project dependency is not pinned with ==: {dependency}",
+                )
             )
             continue
         name, version = match.groups()
@@ -251,8 +297,10 @@ def pyproject_components(path: Path, repo_root: Path, repo: str) -> tuple[list[C
     return components, findings
 
 
-
-def poetry_lock_components(path: Path, repo_root: Path) -> tuple[list[Component], list[PolicyFinding]]:
+def poetry_lock_components(
+    path: Path,
+    repo_root: Path,
+) -> tuple[list[Component], list[PolicyFinding]]:
     """Read exact PyPI versions from Poetry's lockfile."""
     payload = tomllib.loads(path.read_text(encoding="utf-8"))
     relative = str(path.relative_to(repo_root))
@@ -281,7 +329,10 @@ def poetry_lock_components(path: Path, repo_root: Path) -> tuple[list[Component]
     return components, []
 
 
-def pipfile_lock_components(path: Path, repo_root: Path) -> tuple[list[Component], list[PolicyFinding]]:
+def pipfile_lock_components(
+    path: Path,
+    repo_root: Path,
+) -> tuple[list[Component], list[PolicyFinding]]:
     """Read exact PyPI versions from Pipenv's lockfile."""
     payload = json.loads(path.read_text(encoding="utf-8"))
     relative = str(path.relative_to(repo_root))
@@ -317,7 +368,11 @@ def pipfile_lock_components(path: Path, repo_root: Path) -> tuple[list[Component
             )
     return components, findings
 
-def parse_actions(repo_root: Path, repo: str) -> tuple[list[dict[str, str]], list[PolicyFinding]]:
+
+def parse_actions(
+    repo_root: Path,
+    repo: str,
+) -> tuple[list[dict[str, str]], list[PolicyFinding]]:
     actions: list[dict[str, str]] = []
     findings: list[PolicyFinding] = []
     workflows = repo_root / ".github" / "workflows"
@@ -331,18 +386,38 @@ def parse_actions(repo_root: Path, repo: str) -> tuple[list[dict[str, str]], lis
                 continue
             action, separator, ref = value.rpartition("@")
             pinned = bool(separator and FULL_SHA.fullmatch(ref))
-            actions.append({"path": relative, "action": action or value, "ref": ref, "pinned": str(pinned).lower()})
+            actions.append(
+                {
+                    "path": relative,
+                    "action": action or value,
+                    "ref": ref,
+                    "pinned": str(pinned).lower(),
+                }
+            )
             if not pinned:
                 findings.append(
-                    PolicyFinding(repo, "warning", "actions-pin", relative, f"Action is not pinned to a full commit SHA: {value}")
+                    PolicyFinding(
+                        repo,
+                        "warning",
+                        "actions-pin",
+                        relative,
+                        f"Action is not pinned to a full commit SHA: {value}",
+                    )
                 )
     return actions, findings
 
 
-def parse_container_bases(repo_root: Path, repo: str) -> tuple[list[dict[str, str]], list[PolicyFinding]]:
+def parse_container_bases(
+    repo_root: Path,
+    repo: str,
+) -> tuple[list[dict[str, str]], list[PolicyFinding]]:
     bases: list[dict[str, str]] = []
     findings: list[PolicyFinding] = []
-    dockerfiles = [path for path in repo_root.rglob("Dockerfile*") if ".git" not in path.parts]
+    dockerfiles = [
+        path
+        for path in repo_root.rglob("Dockerfile*")
+        if ".git" not in path.parts
+    ]
     for path in sorted(dockerfiles):
         relative = str(path.relative_to(repo_root))
         for raw in path.read_text(encoding="utf-8", errors="replace").splitlines():
@@ -351,18 +426,34 @@ def parse_container_bases(repo_root: Path, repo: str) -> tuple[list[dict[str, st
                 continue
             reference = line.split()[1]
             pinned = "@sha256:" in reference
-            bases.append({"path": relative, "reference": reference, "digest_pinned": str(pinned).lower()})
+            bases.append(
+                {
+                    "path": relative,
+                    "reference": reference,
+                    "digest_pinned": str(pinned).lower(),
+                }
+            )
             if not pinned:
                 findings.append(
-                    PolicyFinding(repo, "info", "container-digest", relative, f"Container base is tag-pinned rather than digest-pinned: {reference}")
+                    PolicyFinding(
+                        repo,
+                        "info",
+                        "container-digest",
+                        relative,
+                        f"Container base is tag-pinned rather than digest-pinned: {reference}",
+                    )
                 )
     return bases, findings
 
 
-def discover_components(repo_root: Path, repo: str) -> tuple[list[Component], list[PolicyFinding], list[Path]]:
+def discover_components(
+    repo_root: Path,
+    repo: str,
+) -> tuple[list[Component], list[PolicyFinding], list[Path]]:
     components: list[Component] = []
     findings: list[PolicyFinding] = []
     manifests: list[Path] = []
+
     for path in repo_root.rglob("package-lock.json"):
         if ".git" in path.parts or "node_modules" in path.parts:
             continue
@@ -370,6 +461,7 @@ def discover_components(repo_root: Path, repo: str) -> tuple[list[Component], li
         found, local_findings = npm_components(path, repo_root)
         components.extend(found)
         findings.extend(local_findings)
+
     for path in repo_root.rglob("requirements.txt"):
         if ".git" in path.parts or ".venv" in path.parts:
             continue
@@ -385,6 +477,7 @@ def discover_components(repo_root: Path, repo: str) -> tuple[list[Component], li
         found, local_findings = poetry_lock_components(path, repo_root)
         components.extend(found)
         findings.extend(local_findings)
+
     for path in repo_root.rglob("Pipfile.lock"):
         if ".git" in path.parts or ".venv" in path.parts:
             continue
@@ -392,6 +485,7 @@ def discover_components(repo_root: Path, repo: str) -> tuple[list[Component], li
         found, local_findings = pipfile_lock_components(path, repo_root)
         components.extend(found)
         findings.extend(local_findings)
+
     for path in repo_root.rglob("pyproject.toml"):
         if ".git" in path.parts or ".venv" in path.parts:
             continue
@@ -401,8 +495,19 @@ def discover_components(repo_root: Path, repo: str) -> tuple[list[Component], li
         found, local_findings = pyproject_components(path, repo_root, repo)
         components.extend(found)
         findings.extend(local_findings)
-    unique = {(item.purl, item.source_file, item.scope): item for item in components}
-    return sorted(unique.values(), key=lambda item: (item.ecosystem, item.name, item.version)), findings, sorted(set(manifests))
+
+    unique = {
+        (item.purl, item.source_file, item.scope): item
+        for item in components
+    }
+    return (
+        sorted(
+            unique.values(),
+            key=lambda item: (item.ecosystem, item.name, item.version),
+        ),
+        findings,
+        sorted(set(manifests)),
+    )
 
 
 def cyclonedx(repo: str, commit: str, components: list[Component]) -> dict[str, Any]:
@@ -410,7 +515,10 @@ def cyclonedx(repo: str, commit: str, components: list[Component]) -> dict[str, 
     return {
         "bomFormat": "CycloneDX",
         "specVersion": "1.5",
-        "serialNumber": f"urn:uuid:{serial[:8]}-{serial[8:12]}-{serial[12:16]}-{serial[16:20]}-{serial[20:32]}",
+        "serialNumber": (
+            f"urn:uuid:{serial[:8]}-{serial[8:12]}-{serial[12:16]}-"
+            f"{serial[16:20]}-{serial[20:32]}"
+        ),
         "version": 1,
         "metadata": {
             "component": {
@@ -418,7 +526,13 @@ def cyclonedx(repo: str, commit: str, components: list[Component]) -> dict[str, 
                 "name": repo,
                 "version": commit,
             },
-            "tools": [{"vendor": "Atlas Systems", "name": "atlas-dep-audit", "version": "1.0.0"}],
+            "tools": [
+                {
+                    "vendor": "Atlas Systems",
+                    "name": "atlas-dep-audit",
+                    "version": "1.0.0",
+                }
+            ],
         },
         "components": [
             {
@@ -445,13 +559,21 @@ def osv_query(components: list[Component]) -> list[dict[str, Any]]:
     for offset in range(0, len(components), 500):
         batch = components[offset : offset + 500]
         payload = json.dumps(
-            {"queries": [{"package": {"purl": item.purl}, "version": item.version} for item in batch]}
+            {
+                "queries": [
+                    {"package": {"purl": item.purl}}
+                    for item in batch
+                ]
+            }
         ).encode("utf-8")
         request = urllib.request.Request(
             "https://api.osv.dev/v1/querybatch",
             data=payload,
             method="POST",
-            headers={"Content-Type": "application/json", "User-Agent": "atlas-dep-audit/1.0"},
+            headers={
+                "Content-Type": "application/json",
+                "User-Agent": "atlas-dep-audit/1.0",
+            },
         )
         with urllib.request.urlopen(request, timeout=90) as response:
             data = json.load(response)
@@ -485,15 +607,27 @@ def cvss_v3_score(vector: str) -> float | None:
     confidentiality = impact_values[metrics["C"]]
     integrity = impact_values[metrics["I"]]
     availability = impact_values[metrics["A"]]
-    impact_subscore = 1 - (1 - confidentiality) * (1 - integrity) * (1 - availability)
+    impact_subscore = (
+        1
+        - (1 - confidentiality)
+        * (1 - integrity)
+        * (1 - availability)
+    )
     if scope_changed:
-        impact = 7.52 * (impact_subscore - 0.029) - 3.25 * (impact_subscore - 0.02) ** 15
+        impact = (
+            7.52 * (impact_subscore - 0.029)
+            - 3.25 * (impact_subscore - 0.02) ** 15
+        )
     else:
         impact = 6.42 * impact_subscore
     exploitability = 8.22 * av * ac * pr * ui
     if impact <= 0:
         return 0.0
-    base = min(1.08 * (impact + exploitability), 10) if scope_changed else min(impact + exploitability, 10)
+    base = (
+        min(1.08 * (impact + exploitability), 10)
+        if scope_changed
+        else min(impact + exploitability, 10)
+    )
     return float(int(base * 10 + 0.999999)) / 10
 
 
@@ -510,7 +644,9 @@ def severity_from_score(score: float) -> str:
 
 
 def severity_of(vulnerability: dict[str, Any]) -> str:
-    value = str(vulnerability.get("database_specific", {}).get("severity") or "").lower()
+    value = str(
+        vulnerability.get("database_specific", {}).get("severity") or ""
+    ).lower()
     if value in SEVERITY_ORDER:
         return "moderate" if value == "medium" else value
     scores = []
@@ -522,7 +658,10 @@ def severity_of(vulnerability: dict[str, Any]) -> str:
     if scores:
         return severity_from_score(max(scores))
     aliases = " ".join(vulnerability.get("aliases", []))
-    summary = f"{vulnerability.get('summary', '')} {vulnerability.get('details', '')} {aliases}".lower()
+    summary = (
+        f"{vulnerability.get('summary', '')} "
+        f"{vulnerability.get('details', '')} {aliases}"
+    ).lower()
     for level in ("critical", "high", "moderate", "low"):
         if re.search(rf"\b{level}\b", summary):
             return level
@@ -539,7 +678,11 @@ def fixed_version_of(vulnerability: dict[str, Any]) -> str | None:
     return sorted(set(fixed))[0] if fixed else None
 
 
-def vulnerabilities_for(repo: str, components: list[Component], results: list[dict[str, Any]]) -> list[Vulnerability]:
+def vulnerabilities_for(
+    repo: str,
+    components: list[Component],
+    results: list[dict[str, Any]],
+) -> list[Vulnerability]:
     findings: list[Vulnerability] = []
     for component, result in zip(components, results, strict=False):
         for vulnerability in result.get("vulns", []):
@@ -580,18 +723,44 @@ def render_summary(
         lines.append(f"- {level}: **{severity_counts.get(level, 0)}**")
     lines.extend(["", "## Vulnerabilities", ""])
     if vulnerabilities:
-        lines.extend(["| Repository | Dependency | Installed | Severity | Fixed | ID |", "|---|---|---|---|---|---|"])
-        for item in sorted(vulnerabilities, key=lambda value: (-SEVERITY_ORDER.get(value.severity, 0), value.repo, value.dependency)):
+        lines.extend(
+            [
+                "| Repository | Dependency | Installed | Severity | Fixed | ID |",
+                "|---|---|---|---|---|---|",
+            ]
+        )
+        for item in sorted(
+            vulnerabilities,
+            key=lambda value: (
+                -SEVERITY_ORDER.get(value.severity, 0),
+                value.repo,
+                value.dependency,
+            ),
+        ):
             lines.append(
-                f"| `{item.repo}` | `{item.dependency}` | `{item.version}` | {item.severity} | `{item.fixed_version or 'not published'}` | `{item.vulnerability_id}` |"
+                f"| `{item.repo}` | `{item.dependency}` | `{item.version}` | "
+                f"{item.severity} | `{item.fixed_version or 'not published'}` | "
+                f"`{item.vulnerability_id}` |"
             )
     else:
         lines.append("No known vulnerabilities were returned by OSV.")
     lines.extend(["", "## Supply-chain policy findings", ""])
     if policy_findings:
-        lines.extend(["| Severity | Repository | Rule | Path | Finding |", "|---|---|---|---|---|"])
-        for item in sorted(policy_findings, key=lambda value: (value.repo, value.rule, value.path)):
-            lines.append(f"| {item.severity} | `{item.repo}` | `{item.rule}` | `{item.path}` | {item.message.replace('|', '\\|')} |")
+        lines.extend(
+            [
+                "| Severity | Repository | Rule | Path | Finding |",
+                "|---|---|---|---|---|",
+            ]
+        )
+        for item in sorted(
+            policy_findings,
+            key=lambda value: (value.repo, value.rule, value.path),
+        ):
+            message = item.message.replace("|", "\\|")
+            lines.append(
+                f"| {item.severity} | `{item.repo}` | `{item.rule}` | "
+                f"`{item.path}` | {message} |"
+            )
     else:
         lines.append("No supply-chain policy findings.")
     lines.extend(
@@ -599,7 +768,11 @@ def render_summary(
             "",
             "## Evidence",
             "",
-            "Each repository has a CycloneDX source SBOM and a provenance record containing the commit, manifest hashes, action refs, and container base refs. These records describe source and build inputs. They do not claim to inventory operating-system packages inside an image that was not built during this run.",
+            "Each repository has a CycloneDX source SBOM and a provenance record "
+            "containing the commit, manifest hashes, action refs, and container "
+            "base refs. These records describe source and build inputs. They do "
+            "not claim to inventory operating-system packages inside an image "
+            "that was not built during this run.",
         ]
     )
     rendered = "\n".join(lines) + "\n"
@@ -623,21 +796,33 @@ def write_provenance(
         "schema": "atlas-build-provenance/v1",
         "repository": repo,
         "commit": commit,
-        "workflow_run": os.getenv("GITHUB_SERVER_URL", "https://github.com")
-        + "/"
-        + os.getenv("GITHUB_REPOSITORY", "AtlasReaper311/atlas-dep-audit")
-        + "/actions/runs/"
-        + os.getenv("GITHUB_RUN_ID", "local"),
+        "workflow_run": (
+            os.getenv("GITHUB_SERVER_URL", "https://github.com")
+            + "/"
+            + os.getenv("GITHUB_REPOSITORY", "AtlasReaper311/atlas-dep-audit")
+            + "/actions/runs/"
+            + os.getenv("GITHUB_RUN_ID", "local")
+        ),
         "manifests": [
-            {"path": str(path.relative_to(repo_root)), "sha256": sha256_file(path)} for path in manifests
+            {
+                "path": str(path.relative_to(repo_root)),
+                "sha256": sha256_file(path),
+            }
+            for path in manifests
         ],
         "github_actions": actions,
         "container_bases": container_bases,
-        "sbom": {"path": sbom_path.name, "sha256": sha256_file(sbom_path)},
+        "sbom": {
+            "path": sbom_path.name,
+            "sha256": sha256_file(sbom_path),
+        },
     }
     if contract_result is not None:
         payload["control_plane_contract_validation"] = contract_result.provenance()
-    output.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    output.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
 
 
 def main() -> int:
@@ -682,7 +867,10 @@ def main() -> int:
     for repo in repos:
         print(f"Scanning {repo}", flush=True)
         if args.local_repositories_root:
-            repo_root = args.local_repositories_root.resolve() / repo.split("/", 1)[1]
+            repo_root = (
+                args.local_repositories_root.resolve()
+                / repo.split("/", 1)[1]
+            )
             if not (repo_root / ".git").exists():
                 policy_findings.append(
                     PolicyFinding(
@@ -698,12 +886,22 @@ def main() -> int:
             try:
                 repo_root = clone_repository(repo, work_dir, token)
             except subprocess.CalledProcessError as error:
-                detail = (error.stderr or str(error)).strip().replace(token, "[redacted]") if token else (error.stderr or str(error)).strip()
-                policy_findings.append(PolicyFinding(repo, "error", "clone", "", detail[:300]))
+                detail = (
+                    (error.stderr or str(error)).strip().replace(token, "[redacted]")
+                    if token
+                    else (error.stderr or str(error)).strip()
+                )
+                policy_findings.append(
+                    PolicyFinding(repo, "error", "clone", "", detail[:300])
+                )
                 continue
+
         repository_roots[repo] = repo_root
         commit = run(["git", "rev-parse", "HEAD"], cwd=repo_root)
-        components, component_findings, manifests = discover_components(repo_root, repo)
+        components, component_findings, manifests = discover_components(
+            repo_root,
+            repo,
+        )
         actions, action_findings = parse_actions(repo_root, repo)
         container_bases, container_findings = parse_container_bases(repo_root, repo)
         contract_result = contract_validation.validate_checkout(repo, repo_root)
@@ -723,7 +921,15 @@ def main() -> int:
 
         safe_name = repo.replace("/", "__")
         sbom_path = sbom_dir / f"{safe_name}.cdx.json"
-        sbom_path.write_text(json.dumps(cyclonedx(repo, commit, components), indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        sbom_path.write_text(
+            json.dumps(
+                cyclonedx(repo, commit, components),
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
         provenance_path = provenance_dir / f"{safe_name}.provenance.json"
         write_provenance(
             provenance_path,
@@ -741,9 +947,25 @@ def main() -> int:
         if not args.skip_osv:
             try:
                 results = osv_query(components)
-                repo_vulnerabilities = vulnerabilities_for(repo, components, results)
-            except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError) as error:
-                policy_findings.append(PolicyFinding(repo, "warning", "osv-query", "", f"OSV query failed: {error}"))
+                repo_vulnerabilities = vulnerabilities_for(
+                    repo,
+                    components,
+                    results,
+                )
+            except (
+                urllib.error.URLError,
+                urllib.error.HTTPError,
+                TimeoutError,
+            ) as error:
+                policy_findings.append(
+                    PolicyFinding(
+                        repo,
+                        "warning",
+                        "osv-query",
+                        "",
+                        f"OSV query failed: {error}",
+                    )
+                )
         vulnerabilities.extend(repo_vulnerabilities)
         if not repo_vulnerabilities:
             clean_repos.append(repo)
@@ -755,6 +977,7 @@ def main() -> int:
         secret_policy_path = canonical_root / "policy" / "secret-watch.json"
     else:
         secret_policy_path = work_dir / "atlas-infra" / "policy" / "secret-watch.json"
+
     live_client: secret_watch.GitHubMetadataClient | None = None
     if args.secret_watch_live:
         secret_token = os.getenv(secret_watch.TOKEN_ENVIRONMENT_NAME, "")
@@ -763,15 +986,21 @@ def main() -> int:
     secret_watch_report = secret_watch.run_secret_watch(
         secret_policy_path,
         repository_roots,
-        metadata_fixture=args.secret_metadata_fixture.resolve()
-        if args.secret_metadata_fixture
-        else None,
+        metadata_fixture=(
+            args.secret_metadata_fixture.resolve()
+            if args.secret_metadata_fixture
+            else None
+        ),
         live_client=live_client,
         detected_at=args.secret_watch_now,
     )
-    secret_watch.write_report(report_dir / "secret-watch.json", secret_watch_report)
+    secret_watch.write_report(
+        report_dir / "secret-watch.json",
+        secret_watch_report,
+    )
     (report_dir / "secret-watch.md").write_text(
-        secret_watch.render_summary(secret_watch_report), encoding="utf-8"
+        secret_watch.render_summary(secret_watch_report),
+        encoding="utf-8",
     )
 
     summary = render_summary(
@@ -814,10 +1043,14 @@ def main() -> int:
 
     threshold = str(policy.get("fail_on", "critical")).lower()
     threshold_value = SEVERITY_ORDER.get(threshold, 4)
-    if any(SEVERITY_ORDER.get(item.severity, 0) >= threshold_value for item in vulnerabilities):
+    if any(
+        SEVERITY_ORDER.get(item.severity, 0) >= threshold_value
+        for item in vulnerabilities
+    ):
         return 1
     blocking_policy_errors = [
-        item for item in policy_findings
+        item
+        for item in policy_findings
         if item.severity == "error" and item.rule not in {"osv-query"}
     ]
     if blocking_policy_errors:
