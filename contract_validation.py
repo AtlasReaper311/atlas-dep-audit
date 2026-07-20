@@ -108,6 +108,8 @@ def validate_checkout(
     """Validate only the canonical contract owner; never execute other repos."""
     if repository != CONTRACT_OWNER:
         return None
+
+    repository_root = repository_root.resolve()
     contract_root = repository_root / "contracts" / "v1"
     if not contract_root.is_dir():
         return _failed("canonical contracts/v1 directory is missing")
