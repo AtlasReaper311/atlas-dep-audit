@@ -19,18 +19,24 @@ class ContractValidationTests(unittest.TestCase):
         *,
         idempotent: bool = True,
         schema_count: int = 8,
+        positive_count: int | None = None,
+        negative_count: int | None = None,
+        fixtures_count: int | None = None,
         exit_code: int = 0,
     ) -> None:
         (root / "contracts" / "v1").mkdir(parents=True)
         scripts = root / "scripts"
         scripts.mkdir()
+        positive = schema_count if positive_count is None else positive_count
+        negative = schema_count if negative_count is None else negative_count
+        fixtures = positive + negative if fixtures_count is None else fixtures_count
         report = {
             "schema_version": "atlas-control-plane/validation-report/v1",
             "contracts_root": "contracts/v1",
             "schemas_checked": schema_count,
-            "fixtures_checked": 16,
-            "positive_fixtures": 8,
-            "negative_fixtures": 8,
+            "fixtures_checked": fixtures,
+            "positive_fixtures": positive,
+            "negative_fixtures": negative,
             "errors": [],
             "idempotent": idempotent,
         }
@@ -79,6 +85,20 @@ sys.exit({exit_code})
             self.assertEqual(8, result.schemas_checked)
             self.assertTrue(result.idempotent)
 
+    def test_additive_contract_growth_passes_without_audit_code_change(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.make_checkout(root, schema_count=11)
+            result = contract_validation.validate_checkout(
+                contract_validation.CONTRACT_OWNER, root
+            )
+            self.assertIsNotNone(result)
+            assert result is not None
+            self.assertEqual("passed", result.status)
+            self.assertEqual(11, result.schemas_checked)
+            self.assertEqual(11, result.positive_fixtures)
+            self.assertEqual(11, result.negative_fixtures)
+
     def test_other_repository_is_never_executed(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -110,17 +130,53 @@ sys.exit({exit_code})
             self.assertEqual("failed", result.status)
             self.assertIn("idempotent", result.error)
 
-    def test_wrong_schema_count_fails(self) -> None:
+    def test_empty_schema_set_fails_closed(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            self.make_checkout(root, schema_count=7)
+            self.make_checkout(root, schema_count=0)
             result = contract_validation.validate_checkout(
                 contract_validation.CONTRACT_OWNER, root
             )
             self.assertIsNotNone(result)
             assert result is not None
             self.assertEqual("failed", result.status)
-            self.assertIn("expected 8 schemas", result.error)
+            self.assertIn("checked no schemas", result.error)
+
+    def test_missing_positive_fixture_coverage_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.make_checkout(root, schema_count=11, positive_count=10)
+            result = contract_validation.validate_checkout(
+                contract_validation.CONTRACT_OWNER, root
+            )
+            self.assertIsNotNone(result)
+            assert result is not None
+            self.assertEqual("failed", result.status)
+            self.assertIn("positive fixture", result.error)
+
+    def test_missing_negative_fixture_coverage_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.make_checkout(root, schema_count=11, negative_count=10)
+            result = contract_validation.validate_checkout(
+                contract_validation.CONTRACT_OWNER, root
+            )
+            self.assertIsNotNone(result)
+            assert result is not None
+            self.assertEqual("failed", result.status)
+            self.assertIn("negative fixture", result.error)
+
+    def test_inconsistent_fixture_totals_fail(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.make_checkout(root, schema_count=11, fixtures_count=21)
+            result = contract_validation.validate_checkout(
+                contract_validation.CONTRACT_OWNER, root
+            )
+            self.assertIsNotNone(result)
+            assert result is not None
+            self.assertEqual("failed", result.status)
+            self.assertIn("fixture totals are inconsistent", result.error)
 
     def test_timeout_fails_closed(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
