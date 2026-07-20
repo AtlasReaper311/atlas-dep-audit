@@ -85,6 +85,25 @@ sys.exit({exit_code})
             self.assertEqual(8, result.schemas_checked)
             self.assertTrue(result.idempotent)
 
+    def test_relative_checkout_path_is_resolved_before_validator_execution(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            parent = Path(directory)
+            checkout = parent / "work" / "atlas-infra"
+            self.make_checkout(checkout)
+            previous_cwd = Path.cwd()
+            try:
+                os.chdir(parent)
+                result = contract_validation.validate_checkout(
+                    contract_validation.CONTRACT_OWNER,
+                    Path("work") / "atlas-infra",
+                )
+            finally:
+                os.chdir(previous_cwd)
+            self.assertIsNotNone(result)
+            assert result is not None
+            self.assertEqual("passed", result.status)
+            self.assertEqual(8, result.schemas_checked)
+
     def test_additive_contract_growth_passes_without_audit_code_change(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
