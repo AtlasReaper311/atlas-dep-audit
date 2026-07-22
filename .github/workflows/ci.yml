@@ -14,25 +14,54 @@ jobs:
   assurance-validation:
     name: Supply-chain unit and contract validation
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    env:
+      AUTHORITY_SHA: 9c983dcd06aceaa3b6a282d0b4f429ee02d190f2
+      ATLAS_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra
     steps:
       - name: Check out repository
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
 
-      - name: Check out current canonical contracts
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - name: Check out reviewed canonical authority
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
         with:
           repository: AtlasReaper311/atlas-infra
+          ref: 9c983dcd06aceaa3b6a282d0b4f429ee02d190f2
           path: .atlas-infra
           persist-credentials: false
 
-      - name: Compile and run offline assurance tests
-        env:
-          ATLAS_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra
+      - name: Verify immutable authority
         run: |
-          python3 -m py_compile audit.py contract_validation.py doc_drift.py estate.py notify.py notify_client.py secret_watch.py
-          python3 -m unittest discover -s tests -v
+          set -euo pipefail
+          test "$(git -C "$ATLAS_INFRA_ROOT" rev-parse HEAD)" = "$AUTHORITY_SHA"
+          python3 "$ATLAS_INFRA_ROOT/scripts/validate_gardener_automation.py" --quiet
+
+      - name: Compile and run offline assurance tests
+        run: |
+          set -euo pipefail
+          python3 -m py_compile \
+            audit.py \
+            contract_validation.py \
+            doc_drift.py \
+            estate.py \
+            gardener_findings.py \
+            notify.py \
+            notify_client.py \
+            secret_watch.py
+          python3 -m unittest discover -s tests -v > /tmp/atlas-dep-audit-tests.log 2>&1
           python3 doc_drift.py --selftest
           python3 contract_validation.py \
             --contracts-root "$ATLAS_INFRA_ROOT" \
             --repository AtlasReaper311/atlas-infra
+
+      - name: Upload failing test output
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: atlas-dep-audit-test-output
+          path: /tmp/atlas-dep-audit-tests.log
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Check whitespace
+        run: git diff --check
