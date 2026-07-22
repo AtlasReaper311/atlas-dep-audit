@@ -16,26 +16,31 @@ jobs:
   audit:
     name: Generate public SBOMs and scan OSV
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 50
+    env:
+      AUTHORITY_SHA: 9c983dcd06aceaa3b6a282d0b4f429ee02d190f2
+      ATLAS_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra
     steps:
       - name: Check out audit repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
 
-      - name: Check out canonical public policy and Finding contract
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Check out reviewed public authority and Finding contract
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
         with:
           repository: AtlasReaper311/atlas-infra
+          ref: 9c983dcd06aceaa3b6a282d0b4f429ee02d190f2
           path: .atlas-infra
           persist-credentials: false
 
-      - name: Validate source
-        env:
-          ATLAS_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra
+      - name: Validate source and immutable authority
         run: |
           set -euo pipefail
+          test "$(git -C "$ATLAS_INFRA_ROOT" rev-parse HEAD)" = "$AUTHORITY_SHA"
+          python3 "$ATLAS_INFRA_ROOT/scripts/validate_gardener_automation.py" --quiet
           python3 -m py_compile audit.py
           python3 -m py_compile private_repository_audit.py
           python3 -m py_compile contract_validation.py
+          python3 -m py_compile gardener_findings.py
           python3 -m py_compile notify.py
           python3 -m py_compile secret_watch.py
           python3 -m unittest discover -s tests -v
@@ -50,7 +55,7 @@ jobs:
           url = "https://raw.githubusercontent.com/AtlasReaper311/atlas-api-public/main/data/public-repositories.json"
           request = urllib.request.Request(
               url,
-              headers={"User-Agent": "atlas-dep-audit/1.0"},
+              headers={"User-Agent": "atlas-dep-audit/1.1"},
           )
           with urllib.request.urlopen(request, timeout=30) as response:
               inventory = json.load(response)
@@ -87,6 +92,25 @@ jobs:
             --secret-watch-live
           cat reports/summary.md >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Export canonical public Gardener Finding bundle
+        id: gardener_export
+        if: always() && steps.audit.outcome != 'cancelled'
+        continue-on-error: true
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          test -s reports/report.json
+          python3 gardener_findings.py \
+            --report reports/report.json \
+            --work-dir work \
+            --infra-root "$ATLAS_INFRA_ROOT" \
+            --output reports/gardener-findings.json \
+            --source-run-id "${GITHUB_RUN_ID}" \
+            --source-run-attempt "${GITHUB_RUN_ATTEMPT}" \
+            --source-commit "${GITHUB_SHA}" \
+            --run-url "$RUN_URL"
+
       - name: Upload public audit evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -116,7 +140,109 @@ jobs:
             --url "$RUN_URL"
 
       - name: Preserve blocking result
-        if: steps.audit.outcome == 'failure'
+        if: steps.audit.outcome == 'failure' || steps.gardener_export.outcome == 'failure'
         run: |
-          echo "Supply-chain policy or critical vulnerability threshold failed."
+          set -euo pipefail
+          echo "Supply-chain audit or Gardener Finding export failed closed."
           exit 1
+
+  publish-gardener-findings:
+    name: Attest and publish Gardener Finding bundle
+    needs: audit
+    if: needs.audit.result == 'success' && vars.ATLAS_GARDENER_HANDOFF_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    concurrency:
+      group: atlas-gardener-finding-handoff
+      cancel-in-progress: false
+    steps:
+      - name: Download the exact audit evidence
+        uses: actions/download-artifact@484a0b528fb4d7bd804637ccb632e47a0e638317 # Node 24
+        with:
+          name: estate-supply-chain-${{ github.run_id }}
+          path: handoff
+          digest-mismatch: error
+
+      - name: Validate bounded handoff input
+        run: |
+          set -euo pipefail
+          test -s handoff/reports/gardener-findings.json
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("handoff/reports/gardener-findings.json")
+          document = json.loads(path.read_text(encoding="utf-8"))
+          if document.get("schema_version") != "atlas-control-plane/gardener-finding-bundle/v1":
+              raise SystemExit("unexpected Gardener Finding bundle schema")
+          if document.get("producer") != "AtlasReaper311/atlas-dep-audit":
+              raise SystemExit("unexpected Gardener Finding bundle producer")
+          if document.get("source_run_id") != "${{ github.run_id }}":
+              raise SystemExit("Gardener Finding bundle run identity mismatch")
+          if document.get("source_commit") != "${{ github.sha }}":
+              raise SystemExit("Gardener Finding bundle source commit mismatch")
+          if document.get("public_only") is not True:
+              raise SystemExit("Gardener Finding bundle is not public-only")
+          PY
+
+      - name: Attest the exact Finding bundle
+        uses: actions/attest-build-provenance@e3fe62ef559997059fe8380e7d2b4c909e2d65f4
+        with:
+          subject-path: handoff/reports/gardener-findings.json
+
+      - name: Publish one linear evidence-branch commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUNDLE_PATH: handoff/reports/gardener-findings.json
+          HANDOFF_BRANCH: gardener-findings
+        run: |
+          set -euo pipefail
+
+          if ! gh api "/repos/${GITHUB_REPOSITORY}/git/ref/heads/${HANDOFF_BRANCH}" >/dev/null 2>&1
+          then
+            BASE_SHA=$(gh api "/repos/${GITHUB_REPOSITORY}/git/ref/heads/main" --jq '.object.sha')
+            gh api \
+              --method POST \
+              "/repos/${GITHUB_REPOSITORY}/git/refs" \
+              -f ref="refs/heads/${HANDOFF_BRANCH}" \
+              -f sha="$BASE_SHA" \
+              >/dev/null
+          fi
+
+          CURRENT_SHA=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${GITHUB_REPOSITORY}/contents/gardener-findings.json?ref=${HANDOFF_BRANCH}" \
+            --jq '.sha' 2>/dev/null || true)
+
+          CONTENT=$(python3 - "$BUNDLE_PATH" <<'PY'
+          import base64
+          import sys
+          from pathlib import Path
+
+          print(base64.b64encode(Path(sys.argv[1]).read_bytes()).decode("ascii"))
+          PY
+          )
+
+          if [ -n "$CURRENT_SHA" ]
+          then
+            gh api \
+              --method PUT \
+              "/repos/${GITHUB_REPOSITORY}/contents/gardener-findings.json" \
+              -f message="chore: publish attested Gardener Finding bundle ${GITHUB_RUN_ID}" \
+              -f content="$CONTENT" \
+              -f branch="$HANDOFF_BRANCH" \
+              -f sha="$CURRENT_SHA" \
+              >/dev/null
+          else
+            gh api \
+              --method PUT \
+              "/repos/${GITHUB_REPOSITORY}/contents/gardener-findings.json" \
+              -f message="chore: publish attested Gardener Finding bundle ${GITHUB_RUN_ID}" \
+              -f content="$CONTENT" \
+              -f branch="$HANDOFF_BRANCH" \
+              >/dev/null
+          fi
