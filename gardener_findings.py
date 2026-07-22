@@ -156,7 +156,7 @@ def tracked_artifacts(
         and (
             Path(path).name in names
             or Path(path).suffix.lower() in suffixes
-            or "__pycache__" in Path(path).parts
+            or (bool(suffixes) and "__pycache__" in Path(path).parts)
         )
     )
 
