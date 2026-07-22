@@ -1,0 +1,903 @@
+{
+  "authority_commit": "67fc27b66cb1a47951d1d649650130f7d3586ca2",
+  "bundle_digest": "sha256:65b0a61e0069d131de764c41336ca90875ca55a5bc7d1f1bc270ed9ebd8edd7e",
+  "expires_at": "2026-07-24T04:21:43Z",
+  "findings": [
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Missing .DS_Store ignore rule."
+      },
+      "fingerprint": "sha256:1beb63dc1979f029622427846f2aebc9302523dfcd7b4c4d48c2761cc5810a29",
+      "location": ".gitignore",
+      "remediation": {
+        "eligible": true,
+        "reason": "Deterministic housekeeping fixer is allowlisted; tracked binary deletion remains review-only."
+      },
+      "rule_id": "macos-metadata-ignore",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "macos-metadata-ignore",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/atlas-blackbox"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Line 5 is not pinned with ==: uvicorn[standard]==0.51.0"
+      },
+      "fingerprint": "sha256:2ac2bc9ddebfe7fe64b1aaf3e5ecec86927d76c564bbb7cff961f3bb21301e90",
+      "location": "requirements.txt",
+      "remediation": {
+        "eligible": false,
+        "reason": "No deterministic Gardener fixer is approved for this audit rule."
+      },
+      "rule_id": "python-unpinned",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "python-unpinned",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/atlas-corpus"
+      }
+    },
+    {
+      "category": "security",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
+      },
+      "fingerprint": "sha256:2e896128f5c293add1c23d56c2f13ec6491ae2b346744d8c70a825e30cd19d8e",
+      "location": "package-lock.json",
+      "remediation": {
+        "eligible": false,
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
+      },
+      "rule_id": "dependency-vulnerability",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "dependency-vulnerability",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/atlas-quota-watch"
+      }
+    },
+    {
+      "category": "security",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "GHSA-3jxr-9vmj-r5cp affects brace-expansion 5.0.6."
+      },
+      "fingerprint": "sha256:3547c30d84757331d8909eb77433aafe1f59586e867576bfab5c80b4f8c5b67c",
+      "location": "package-lock.json",
+      "remediation": {
+        "eligible": false,
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
+      },
+      "rule_id": "dependency-vulnerability",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "dependency-vulnerability",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/deploy-watch"
+      }
+    },
+    {
+      "category": "security",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
+      },
+      "fingerprint": "sha256:3dd9744196dbf27131c9ecb89634ec40c3b63afa228a549cf1cc0c20587d8755",
+      "location": "package-lock.json",
+      "remediation": {
+        "eligible": false,
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
+      },
+      "rule_id": "dependency-vulnerability",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "dependency-vulnerability",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/atlas-api-public"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Missing .DS_Store ignore rule."
+      },
+      "fingerprint": "sha256:4444306a2d03b1d16f98baf85670b75f041ea308f889041158f2c1dba692268b",
+      "location": ".gitignore",
+      "remediation": {
+        "eligible": true,
+        "reason": "Deterministic housekeeping fixer is allowlisted; tracked binary deletion remains review-only."
+      },
+      "rule_id": "macos-metadata-ignore",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "macos-metadata-ignore",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/atlas-daily-digest"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Missing .DS_Store ignore rule."
+      },
+      "fingerprint": "sha256:4b60e10f26af794f7fac7f0b2388b8842552d1fff4b5a490db40516291c398ce",
+      "location": ".gitignore",
+      "remediation": {
+        "eligible": true,
+        "reason": "Deterministic housekeeping fixer is allowlisted; tracked binary deletion remains review-only."
+      },
+      "rule_id": "macos-metadata-ignore",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "macos-metadata-ignore",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/specular-sonify"
+      }
+    },
+    {
+      "category": "security",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
+      },
+      "fingerprint": "sha256:53f18c43fff4faa19fce1a457b7f0684a78f2303af20d721325ec32aa91431ce",
+      "location": "package-lock.json",
+      "remediation": {
+        "eligible": false,
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
+      },
+      "rule_id": "dependency-vulnerability",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "dependency-vulnerability",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/atlas-dora"
+      }
+    },
+    {
+      "category": "security",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
+      },
+      "fingerprint": "sha256:54b6d5262fed0d81d292fc95001144a8c17456f2a457dc49bded69f182486247",
+      "location": "package-lock.json",
+      "remediation": {
+        "eligible": false,
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
+      },
+      "rule_id": "dependency-vulnerability",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "dependency-vulnerability",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/atlas-api-index"
+      }
+    },
+    {
+      "category": "security",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
+      },
+      "fingerprint": "sha256:772d705d601703efa59abbfbadf0f08cfd0eeadbd290e8c61c35e640fce8d7ef",
+      "location": "package-lock.json",
+      "remediation": {
+        "eligible": false,
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
+      },
+      "rule_id": "dependency-vulnerability",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "dependency-vulnerability",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/ramone-edge"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Line 2 is not pinned with ==: uvicorn[standard]==0.51.0"
+      },
+      "fingerprint": "sha256:87ce2893e608cc564eefaa93762195ab4ef02bc729c45a2719d66ba030349adc",
+      "location": "local/requirements.txt",
+      "remediation": {
+        "eligible": false,
+        "reason": "No deterministic Gardener fixer is approved for this audit rule."
+      },
+      "rule_id": "python-unpinned",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "python-unpinned",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/specular-telemetry"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Container base is tag-pinned rather than digest-pinned: python:3.12-slim"
+      },
+      "fingerprint": "sha256:888c0dc0a9798b24ddc8391308d25b461db9a97652beaa9aeecb96c8dbcb2d97",
+      "location": "Dockerfile",
+      "remediation": {
+        "eligible": false,
+        "reason": "No deterministic Gardener fixer is approved for this audit rule."
+      },
+      "rule_id": "container-digest",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "container-digest",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/ramone-memory"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Missing .DS_Store ignore rule."
+      },
+      "fingerprint": "sha256:8f13e9c418e2827a4b8d0a8025d8e1c96bd60ea0cceee185b0adecbcb1110cbd",
+      "location": ".gitignore",
+      "remediation": {
+        "eligible": true,
+        "reason": "Deterministic housekeeping fixer is allowlisted; tracked binary deletion remains review-only."
+      },
+      "rule_id": "macos-metadata-ignore",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "macos-metadata-ignore",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/ramone-voice-trigger"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Missing .DS_Store ignore rule."
+      },
+      "fingerprint": "sha256:918f07ed920792e4c09676cf2f081ed54a996fcbb68c000f23167426f2f2ca51",
+      "location": ".gitignore",
+      "remediation": {
+        "eligible": true,
+        "reason": "Deterministic housekeeping fixer is allowlisted; tracked binary deletion remains review-only."
+      },
+      "rule_id": "macos-metadata-ignore",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "macos-metadata-ignore",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/specular-telemetry"
+      }
+    },
+    {
+      "category": "security",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "GHSA-3jxr-9vmj-r5cp affects brace-expansion 5.0.6."
+      },
+      "fingerprint": "sha256:98321c65ae4a8b7a8b48006598a966d97e3cc42686603852b518d68e8fa63a32",
+      "location": "package-lock.json",
+      "remediation": {
+        "eligible": false,
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
+      },
+      "rule_id": "dependency-vulnerability",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "dependency-vulnerability",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/github-pulse"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Missing .DS_Store ignore rule."
+      },
+      "fingerprint": "sha256:9913f53045d93cbf67829ff125dcff6cd3e24cc21aa52e3e0c965a654ca986b7",
+      "location": ".gitignore",
+      "remediation": {
+        "eligible": true,
+        "reason": "Deterministic housekeeping fixer is allowlisted; tracked binary deletion remains review-only."
+      },
+      "rule_id": "macos-metadata-ignore",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "macos-metadata-ignore",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/atlas-corpus"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Line 5 is not pinned with ==: uvicorn[standard]==0.51.0"
+      },
+      "fingerprint": "sha256:9ade6e7234fb77741901144592d316a8f1faa44eafc5aa9f2883ac6e676c58a7",
+      "location": "requirements.txt",
+      "remediation": {
+        "eligible": false,
+        "reason": "No deterministic Gardener fixer is approved for this audit rule."
+      },
+      "rule_id": "python-unpinned",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "python-unpinned",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/ramone-memory"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Missing Python cache ignore rule(s): *.py[cod], __pycache__/"
+      },
+      "fingerprint": "sha256:c4ad6ee8c15e238f319a5c5b74d7870f3e8c2ea2f95c1e77fb1f4742f2acbaad",
+      "location": ".gitignore",
+      "remediation": {
+        "eligible": true,
+        "reason": "Deterministic housekeeping fixer is allowlisted; tracked binary deletion remains review-only."
+      },
+      "rule_id": "python-cache-ignore",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "python-cache-ignore",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/atlas-quota-watch"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Container base is tag-pinned rather than digest-pinned: python:3.12-slim"
+      },
+      "fingerprint": "sha256:c65b25347cdecf43a46a74e0b14d027f125d16b20ad791fc348188aabfa61e76",
+      "location": "Dockerfile",
+      "remediation": {
+        "eligible": false,
+        "reason": "No deterministic Gardener fixer is approved for this audit rule."
+      },
+      "rule_id": "container-digest",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "container-digest",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/atlas-corpus"
+      }
+    },
+    {
+      "category": "security",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "GHSA-3jxr-9vmj-r5cp affects brace-expansion 5.0.6."
+      },
+      "fingerprint": "sha256:c98b740a2767144401fa47996e1c11dad53a1eea5d1b81cc8aafd17fea6e5c49",
+      "location": "package-lock.json",
+      "remediation": {
+        "eligible": false,
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
+      },
+      "rule_id": "dependency-vulnerability",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "dependency-vulnerability",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/site-pulse"
+      }
+    },
+    {
+      "category": "security",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
+      },
+      "fingerprint": "sha256:d6770f1e91078978115dec6197104400af886e1974af82db7e0dd0d75a1aecd7",
+      "location": "worker/package-lock.json",
+      "remediation": {
+        "eligible": false,
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
+      },
+      "rule_id": "dependency-vulnerability",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "dependency-vulnerability",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/specular-telemetry"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Missing Python cache ignore rule(s): *.py[cod]"
+      },
+      "fingerprint": "sha256:e50c03a0a161e34cb0d9ff676e2c8d6533f213a7b713c9610f3af1ec0bf20270",
+      "location": ".gitignore",
+      "remediation": {
+        "eligible": true,
+        "reason": "Deterministic housekeeping fixer is allowlisted; tracked binary deletion remains review-only."
+      },
+      "rule_id": "python-cache-ignore",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "python-cache-ignore",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/specular-sentinel"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Missing .DS_Store ignore rule."
+      },
+      "fingerprint": "sha256:e94fced9463df316e0527924256d98d6374fbe28957e83d69e6b5b023a3cbefe",
+      "location": ".gitignore",
+      "remediation": {
+        "eligible": true,
+        "reason": "Deterministic housekeeping fixer is allowlisted; tracked binary deletion remains review-only."
+      },
+      "rule_id": "macos-metadata-ignore",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "macos-metadata-ignore",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/specular-sentinel"
+      }
+    },
+    {
+      "category": "security",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
+      },
+      "fingerprint": "sha256:e9df9c7b91ebf915b353ef13f70c3e5ab9af33e598c1d8eb666dd5eebd2a3446",
+      "location": "worker/package-lock.json",
+      "remediation": {
+        "eligible": false,
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
+      },
+      "rule_id": "dependency-vulnerability",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "dependency-vulnerability",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/ramone-voice-trigger"
+      }
+    },
+    {
+      "category": "security",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "GHSA-3jxr-9vmj-r5cp affects brace-expansion 5.0.6."
+      },
+      "fingerprint": "sha256:ef4c5837d4d5465e7ccef47c4e3d4632e3af0dc6182e6982ae232919e5466f2a",
+      "location": "package-lock.json",
+      "remediation": {
+        "eligible": false,
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
+      },
+      "rule_id": "dependency-vulnerability",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "dependency-vulnerability",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/atlas-notify"
+      }
+    },
+    {
+      "category": "security",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
+      },
+      "fingerprint": "sha256:f1e14dd3a8f02dbdaf057688f9d710e0a92cb0317a3129cd16d747ccbe7e5f6d",
+      "location": "package-lock.json",
+      "remediation": {
+        "eligible": false,
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
+      },
+      "rule_id": "dependency-vulnerability",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "dependency-vulnerability",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/atlas-daily-digest"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Missing .DS_Store ignore rule."
+      },
+      "fingerprint": "sha256:f6079e263aafc9c3f556d553937a9834262871cc9e4dc99ba9e8b0c6729145e5",
+      "location": ".gitignore",
+      "remediation": {
+        "eligible": true,
+        "reason": "Deterministic housekeeping fixer is allowlisted; tracked binary deletion remains review-only."
+      },
+      "rule_id": "macos-metadata-ignore",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "macos-metadata-ignore",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/site-pulse"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T16:21:43Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937614532"
+        ],
+        "summary": "Missing .DS_Store ignore rule."
+      },
+      "fingerprint": "sha256:fd7d71d96a4f157a0f49c56931e0095cfe6557049894a61ab7eb21bac6213a5c",
+      "location": ".gitignore",
+      "remediation": {
+        "eligible": true,
+        "reason": "Deterministic housekeeping fixer is allowlisted; tracked binary deletion remains review-only."
+      },
+      "rule_id": "macos-metadata-ignore",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "macos-metadata-ignore",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/atlas-api-index"
+      }
+    }
+  ],
+  "generated_at": "2026-07-22T16:21:43Z",
+  "policy_digest": "sha256:696a233ab5d0897f1ff9688fcffbedc81b32463ec528f2ea946e3efdc6a57220",
+  "producer": "AtlasReaper311/atlas-dep-audit",
+  "public_only": true,
+  "repository_snapshots": [
+    {
+      "base_branch": "main",
+      "base_sha": "906c952ba223a9e5a2e878115690c3a39137ee0c",
+      "repository": "AtlasReaper311/atlas-api-index"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "c8357863ebe17c949d33c79cbad76c8e51e4ffbc",
+      "repository": "AtlasReaper311/atlas-api-public"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "6500b8afc54cc9dace39f1ff1732cac42438d1ee",
+      "repository": "AtlasReaper311/atlas-blackbox"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "5b8d090aaa28df17e127fe3e94977b0b981e36d8",
+      "repository": "AtlasReaper311/atlas-corpus"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "bda8fa57a8b65e3e473c97eb4cf90a0fe8746385",
+      "repository": "AtlasReaper311/atlas-daily-digest"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "364131550abdf28097951c7c38bb0e0cec58cefe",
+      "repository": "AtlasReaper311/atlas-doc-viewer"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "89257e46189a72214bccd81a27495f771195963f",
+      "repository": "AtlasReaper311/atlas-dora"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "ed143d33e1b2d284576eb9ae6eeec9973ced4419",
+      "repository": "AtlasReaper311/atlas-notify"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "35e0658d2757c6b3b15b2d8856c9aff9d4c9f28f",
+      "repository": "AtlasReaper311/atlas-quota-watch"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "1068e720f4124fe5a3e2ad31592670ca3946c8dc",
+      "repository": "AtlasReaper311/atlas-systems"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "cdfaf8e58bd561f51f8563640a7c794af648b6ce",
+      "repository": "AtlasReaper311/deploy-watch"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "90b53e30e22296301abf0abd7d1753f0a36f48da",
+      "repository": "AtlasReaper311/github-pulse"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "27170c6aeb0699a09a9ab9b55470fb88dcfef910",
+      "repository": "AtlasReaper311/ramone-edge"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "68eaf9ac98f3b6b099f96487bf6f37fe5ef0e8c0",
+      "repository": "AtlasReaper311/ramone-memory"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "98c2f37497c56c8e1867b97ca5e241889d321123",
+      "repository": "AtlasReaper311/ramone-voice-trigger"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "ca107d71ed74709351b90c13f723005f0dbd5ff8",
+      "repository": "AtlasReaper311/site-pulse"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "70f72955be6eba7f77bd447fd8fa3e5735fb6176",
+      "repository": "AtlasReaper311/specular-sentinel"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "ce52101df41de5e6ca483c91d20e8f8235079de2",
+      "repository": "AtlasReaper311/specular-sonify"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "bd094b07c1a76022e1a6968dd5e17a535bf8dbe1",
+      "repository": "AtlasReaper311/specular-telemetry"
+    },
+    {
+      "base_branch": "main",
+      "base_sha": "1f52fabf658cac592c98cab74904f45d6e90da0f",
+      "repository": "AtlasReaper311/status"
+    }
+  ],
+  "schema_version": "atlas-control-plane/gardener-finding-bundle/v1",
+  "source_commit": "216080e6ef3b7edbb7134a3796622d6d27d4d47c",
+  "source_report_digest": "sha256:ac977b0e4f4cf63deed5517a0922cfa7aea5efa61e579057155f6038b42e9377",
+  "source_run_attempt": 1,
+  "source_run_id": "29937614532",
+  "source_workflow": ".github/workflows/audit.yml"
+}
