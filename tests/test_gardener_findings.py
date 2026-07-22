@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import json
 import os
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -162,6 +163,10 @@ class GardenerFindingTests(unittest.TestCase):
                     "__pycache__/app.pyc": b"\x00binary",
                 },
             )
+            self.run_git(repository, "add", "-f", "__pycache__/app.pyc")
+            self.run_git(repository, "commit", "--amend", "--no-edit")
+            head = self.run_git(repository, "rev-parse", "HEAD")
+            self.run_git(repository, "update-ref", "refs/remotes/origin/main", head)
             findings = gardener_findings.housekeeping_findings(
                 "AtlasReaper311/tracked-example",
                 repository,
@@ -242,7 +247,10 @@ class GardenerFindingTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertTrue(first["public_only"])
         self.assertEqual(20, len(first["repository_snapshots"]))
-        self.assertEqual(self.repositories, [item["repository"] for item in first["repository_snapshots"]])
+        self.assertEqual(
+            self.repositories,
+            [item["repository"] for item in first["repository_snapshots"]],
+        )
         self.assertEqual([], first["findings"])
         self.assertRegex(first["bundle_digest"], r"^sha256:[0-9a-f]{64}$")
 
@@ -270,7 +278,7 @@ class GardenerFindingTests(unittest.TestCase):
             root = Path(directory)
             work = self.prepare_estate(root)
             missing = self.repositories[-1].split("/", 1)[1]
-            subprocess.run(["rm", "-rf", str(work / missing)], check=True)
+            shutil.rmtree(work / missing)
             report_path = self.write_report(root)
             with self.assertRaisesRegex(
                 gardener_findings.FindingExportError,
