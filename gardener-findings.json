@@ -1,15 +1,15 @@
 {
-  "authority_commit": "67fc27b66cb1a47951d1d649650130f7d3586ca2",
-  "bundle_digest": "sha256:6021aa26c8bf3c0a92b5ec1cb3f0277200ff2cfa3f7cbfa72293ae7efb0da2b7",
-  "expires_at": "2026-07-24T04:25:34Z",
+  "authority_commit": "6689de2c7ccd9264348c75bed99745021f88f191",
+  "bundle_digest": "sha256:3a3ae64572a802c480dcadd56b459b438b2a5a9f8c11d5bd4e83aeb70587c3c3",
+  "expires_at": "2026-07-24T05:54:16Z",
   "findings": [
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Missing .DS_Store ignore rule."
       },
@@ -33,11 +33,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Line 5 is not pinned with ==: uvicorn[standard]==0.51.0"
       },
@@ -61,11 +61,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
       },
@@ -89,11 +89,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "GHSA-3jxr-9vmj-r5cp affects brace-expansion 5.0.6."
       },
@@ -117,11 +117,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
       },
@@ -145,11 +145,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Missing .DS_Store ignore rule."
       },
@@ -173,11 +173,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Missing .DS_Store ignore rule."
       },
@@ -201,11 +201,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
       },
@@ -229,11 +229,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
       },
@@ -257,11 +257,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
       },
@@ -285,11 +285,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Line 2 is not pinned with ==: uvicorn[standard]==0.51.0"
       },
@@ -313,11 +313,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Container base is tag-pinned rather than digest-pinned: python:3.12-slim"
       },
@@ -341,11 +341,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Missing .DS_Store ignore rule."
       },
@@ -369,11 +369,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Missing .DS_Store ignore rule."
       },
@@ -397,11 +397,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "GHSA-3jxr-9vmj-r5cp affects brace-expansion 5.0.6."
       },
@@ -425,11 +425,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Missing .DS_Store ignore rule."
       },
@@ -453,11 +453,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Line 5 is not pinned with ==: uvicorn[standard]==0.51.0"
       },
@@ -481,11 +481,39 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
+        ],
+        "summary": "Missing .DS_Store ignore rule."
+      },
+      "fingerprint": "sha256:a137afbfb36a5200ba7fe790ed0a19c59b8d741e3df5e8c9596b1091a485ee5d",
+      "location": ".gitignore",
+      "remediation": {
+        "eligible": true,
+        "reason": "Deterministic housekeeping fixer is allowlisted; tracked binary deletion remains review-only."
+      },
+      "rule_id": "macos-metadata-ignore",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "macos-metadata-ignore",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/atlas-dora"
+      }
+    },
+    {
+      "category": "policy",
+      "detected_at": "2026-07-22T17:54:16Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Missing Python cache ignore rule(s): *.py[cod], __pycache__/"
       },
@@ -509,11 +537,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Container base is tag-pinned rather than digest-pinned: python:3.12-slim"
       },
@@ -537,11 +565,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "GHSA-3jxr-9vmj-r5cp affects brace-expansion 5.0.6."
       },
@@ -565,11 +593,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
       },
@@ -593,11 +621,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Missing Python cache ignore rule(s): *.py[cod]"
       },
@@ -621,11 +649,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Missing .DS_Store ignore rule."
       },
@@ -649,11 +677,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
       },
@@ -677,11 +705,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "GHSA-3jxr-9vmj-r5cp affects brace-expansion 5.0.6."
       },
@@ -705,11 +733,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "GHSA-f88m-g3jw-g9cj affects sharp 0.34.5."
       },
@@ -733,11 +761,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Missing .DS_Store ignore rule."
       },
@@ -761,11 +789,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-07-22T16:25:34Z",
+      "detected_at": "2026-07-22T17:54:16Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29937895801"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/29944279739"
         ],
         "summary": "Missing .DS_Store ignore rule."
       },
@@ -788,8 +816,8 @@
       }
     }
   ],
-  "generated_at": "2026-07-22T16:25:34Z",
-  "policy_digest": "sha256:696a233ab5d0897f1ff9688fcffbedc81b32463ec528f2ea946e3efdc6a57220",
+  "generated_at": "2026-07-22T17:54:16Z",
+  "policy_digest": "sha256:21ed585c10a7ce5f0754a4fde1010a8ec504e5f646ddc6b541e043338be1c42e",
   "producer": "AtlasReaper311/atlas-dep-audit",
   "public_only": true,
   "repository_snapshots": [
@@ -825,7 +853,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "89257e46189a72214bccd81a27495f771195963f",
+      "base_sha": "81f2e21116827ffaaa3d0c813eb72a25884bbc2b",
       "repository": "AtlasReaper311/atlas-dora"
     },
     {
@@ -840,7 +868,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "1068e720f4124fe5a3e2ad31592670ca3946c8dc",
+      "base_sha": "36a74e6893fe2469805b269102faf9b29b43c3b2",
       "repository": "AtlasReaper311/atlas-systems"
     },
     {
@@ -895,9 +923,9 @@
     }
   ],
   "schema_version": "atlas-control-plane/gardener-finding-bundle/v1",
-  "source_commit": "216080e6ef3b7edbb7134a3796622d6d27d4d47c",
-  "source_report_digest": "sha256:c43c719257e990db28aeef1488b25df67daa66a846d8661bf11a82b7b6ebb6c5",
+  "source_commit": "8b0524f4b62e80c584b14724fa8701a9a6ba3811",
+  "source_report_digest": "sha256:314a8f3b430eae42691d3768fcb73774f07620ee077650de30bd59ff4922476f",
   "source_run_attempt": 1,
-  "source_run_id": "29937895801",
+  "source_run_id": "29944279739",
   "source_workflow": ".github/workflows/audit.yml"
 }
