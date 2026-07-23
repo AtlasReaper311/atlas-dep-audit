@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 50
     env:
-      AUTHORITY_SHA: 6689de2c7ccd9264348c75bed99745021f88f191
+      AUTHORITY_SHA: e24a168e9f8de179436539632f8f7f8aef2bfef9
       ATLAS_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra
     steps:
       - name: Check out audit repository
@@ -28,7 +28,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
         with:
           repository: AtlasReaper311/atlas-infra
-          ref: 6689de2c7ccd9264348c75bed99745021f88f191
+          ref: e24a168e9f8de179436539632f8f7f8aef2bfef9
           path: .atlas-infra
           persist-credentials: false
 
@@ -37,12 +37,16 @@ jobs:
           set -euo pipefail
           test "$(git -C "$ATLAS_INFRA_ROOT" rev-parse HEAD)" = "$AUTHORITY_SHA"
           python3 "$ATLAS_INFRA_ROOT/scripts/validate_gardener_automation.py" --quiet
+          python3 validate_gardener_schedule.py \
+            --infra-root "$ATLAS_INFRA_ROOT" \
+            --quiet
           python3 -m py_compile audit.py
           python3 -m py_compile private_repository_audit.py
           python3 -m py_compile contract_validation.py
           python3 -m py_compile gardener_findings.py
           python3 -m py_compile notify.py
           python3 -m py_compile secret_watch.py
+          python3 -m py_compile validate_gardener_schedule.py
           python3 -m unittest discover -s tests -v
 
       - name: Build public repository scan manifest
