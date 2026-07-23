@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      AUTHORITY_SHA: e24a168e9f8de179436539632f8f7f8aef2bfef9
+      AUTHORITY_SHA: 1c9e37055818a6141d46e92ecf15ec40922279b8
       ATLAS_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra
     steps:
       - name: Check out repository
@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
         with:
           repository: AtlasReaper311/atlas-infra
-          ref: e24a168e9f8de179436539632f8f7f8aef2bfef9
+          ref: 1c9e37055818a6141d46e92ecf15ec40922279b8
           path: .atlas-infra
           persist-credentials: false
 
