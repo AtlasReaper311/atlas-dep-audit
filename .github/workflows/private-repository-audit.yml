@@ -22,11 +22,18 @@ jobs:
           path: target
           persist-credentials: false
 
+      # The tooling revision must be reachable from main. It previously pinned
+      # 5a87c6cea1f8506b24be9fc94d3f22c593340ca8, which exists only on the
+      # unmerged branch feat/private-public-boundary; deleting that branch would
+      # have made the commit unreachable and broken this checkout for every
+      # private consumer at once. fc565353 is on main and carries byte-identical
+      # audit.py, private_repository_audit.py and policy.json, so the audit
+      # behaviour is unchanged.
       - name: Check out pinned audit tooling
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
         with:
           repository: AtlasReaper311/atlas-dep-audit
-          ref: 5a87c6cea1f8506b24be9fc94d3f22c593340ca8
+          ref: fc565353c83f19d117ed3c3173d667429a672f66
           path: .audit-tooling
           persist-credentials: false
 
