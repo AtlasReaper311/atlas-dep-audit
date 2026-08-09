@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
+        with:
+          fetch-depth: 0
 
       - name: Check out reviewed canonical authority
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
@@ -39,6 +41,12 @@ jobs:
             --infra-root "$ATLAS_INFRA_ROOT" \
             --quiet
 
+      - name: Verify self-tooling pins are main-reachable
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          python3 workflow_pin_validation.py --main-ref origin/main
+
       - name: Compile and run offline assurance tests
         run: |
           set -euo pipefail
@@ -51,7 +59,8 @@ jobs:
             notify.py \
             notify_client.py \
             secret_watch.py \
-            validate_gardener_schedule.py
+            validate_gardener_schedule.py \
+            workflow_pin_validation.py
           python3 -m unittest discover -s tests -v > /tmp/atlas-dep-audit-tests.log 2>&1
           python3 doc_drift.py --selftest
           python3 contract_validation.py \
