@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Check out audit repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
+        with:
+          fetch-depth: 0
 
       - name: Check out reviewed public authority and Finding contract
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
@@ -98,7 +100,7 @@ jobs:
 
       - name: Export canonical public Gardener Finding bundle
         id: gardener_export
-        if: always() && steps.audit.outcome != 'cancelled'
+        if: always() && steps.audit.outcome != 'cancelled' && hashFiles('reports/report.json') != ''
         continue-on-error: true
         env:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -116,7 +118,7 @@ jobs:
             --run-url "$RUN_URL"
 
       - name: Upload public audit evidence
-        if: always()
+        if: always() && (hashFiles('reports/**') != '' || hashFiles('sbom/**') != '' || hashFiles('provenance/**') != '')
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: estate-supply-chain-${{ github.run_id }}
