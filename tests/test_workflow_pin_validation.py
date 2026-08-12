@@ -125,7 +125,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: AtlasReaper311/atlas-infra
-          ref: 1c9e37055818a6141d46e92ecf15ec40922279b8
+          ref: e013aa009026452bccd6b7fc280817e80106dcc7
 """
         steps = VALIDATE.parse_checkout_steps(text, Path("fixture.yml"))
         self.assertEqual(1, len(steps))
@@ -284,7 +284,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: AtlasReaper311/atlas-infra
-          ref: 1c9e37055818a6141d46e92ecf15ec40922279b8
+          ref: e013aa009026452bccd6b7fc280817e80106dcc7
 """,
             )
             with self.assertRaisesRegex(
