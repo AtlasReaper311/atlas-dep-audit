@@ -1,15 +1,15 @@
 {
   "authority_commit": "e013aa009026452bccd6b7fc280817e80106dcc7",
-  "bundle_digest": "sha256:0f50655e354598fd25ecfb9350984a1ab18897480778ed51ca7ce2d470eea4ba",
-  "expires_at": "2026-08-14T09:34:37Z",
+  "bundle_digest": "sha256:80f595a6962978d14d9fdcf994eca2e72aabecca70798a687712702313959ebf",
+  "expires_at": "2026-08-14T09:39:54Z",
   "findings": [
     {
       "category": "policy",
-      "detected_at": "2026-08-12T21:34:37Z",
+      "detected_at": "2026-08-12T21:39:54Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643492216"
         ],
         "summary": "Line 5 is not pinned with ==: uvicorn[standard]==0.52.1"
       },
@@ -33,11 +33,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-08-12T21:34:37Z",
+      "detected_at": "2026-08-12T21:39:54Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643492216"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -61,11 +61,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-08-12T21:34:37Z",
+      "detected_at": "2026-08-12T21:39:54Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643492216"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -88,40 +88,12 @@
       }
     },
     {
-      "category": "policy",
-      "detected_at": "2026-08-12T21:34:37Z",
-      "evidence": {
-        "redacted": true,
-        "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
-        ],
-        "summary": "Missing .DS_Store ignore rule."
-      },
-      "fingerprint": "sha256:4444306a2d03b1d16f98baf85670b75f041ea308f889041158f2c1dba692268b",
-      "location": ".gitignore",
-      "remediation": {
-        "eligible": true,
-        "reason": "Deterministic housekeeping fixer is allowlisted; tracked binary deletion remains review-only."
-      },
-      "rule_id": "macos-metadata-ignore",
-      "schema_version": "atlas-control-plane/finding/v1",
-      "severity": "warning",
-      "source": {
-        "check_id": "macos-metadata-ignore",
-        "producer": "atlas-dep-audit",
-        "producer_version": "1.1.0"
-      },
-      "subject": {
-        "repository": "AtlasReaper311/atlas-daily-digest"
-      }
-    },
-    {
       "category": "security",
-      "detected_at": "2026-08-12T21:34:37Z",
+      "detected_at": "2026-08-12T21:39:54Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643492216"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -145,11 +117,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-08-12T21:34:37Z",
+      "detected_at": "2026-08-12T21:39:54Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643492216"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -173,11 +145,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-08-12T21:34:37Z",
+      "detected_at": "2026-08-12T21:39:54Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643492216"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -201,11 +173,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-08-12T21:34:37Z",
+      "detected_at": "2026-08-12T21:39:54Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643492216"
         ],
         "summary": "Line 2 is not pinned with ==: uvicorn[standard]==0.52.0"
       },
@@ -229,11 +201,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-08-12T21:34:37Z",
+      "detected_at": "2026-08-12T21:39:54Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643492216"
         ],
         "summary": "Container base is tag-pinned rather than digest-pinned: python:3.12-slim"
       },
@@ -257,39 +229,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-08-12T21:34:37Z",
+      "detected_at": "2026-08-12T21:39:54Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
-        ],
-        "summary": "Missing .DS_Store ignore rule."
-      },
-      "fingerprint": "sha256:8f13e9c418e2827a4b8d0a8025d8e1c96bd60ea0cceee185b0adecbcb1110cbd",
-      "location": ".gitignore",
-      "remediation": {
-        "eligible": true,
-        "reason": "Deterministic housekeeping fixer is allowlisted; tracked binary deletion remains review-only."
-      },
-      "rule_id": "macos-metadata-ignore",
-      "schema_version": "atlas-control-plane/finding/v1",
-      "severity": "warning",
-      "source": {
-        "check_id": "macos-metadata-ignore",
-        "producer": "atlas-dep-audit",
-        "producer_version": "1.1.0"
-      },
-      "subject": {
-        "repository": "AtlasReaper311/ramone-voice-trigger"
-      }
-    },
-    {
-      "category": "policy",
-      "detected_at": "2026-08-12T21:34:37Z",
-      "evidence": {
-        "redacted": true,
-        "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643492216"
         ],
         "summary": "Line 5 is not pinned with ==: uvicorn[standard]==0.52.0"
       },
@@ -313,11 +257,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-08-12T21:34:37Z",
+      "detected_at": "2026-08-12T21:39:54Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643492216"
         ],
         "summary": "Container base is tag-pinned rather than digest-pinned: python:3.12-slim"
       },
@@ -341,11 +285,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-08-12T21:34:37Z",
+      "detected_at": "2026-08-12T21:39:54Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643492216"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -369,39 +313,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-08-12T21:34:37Z",
+      "detected_at": "2026-08-12T21:39:54Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
-        ],
-        "summary": "Missing Python cache ignore rule(s): *.py[cod]"
-      },
-      "fingerprint": "sha256:e50c03a0a161e34cb0d9ff676e2c8d6533f213a7b713c9610f3af1ec0bf20270",
-      "location": ".gitignore",
-      "remediation": {
-        "eligible": true,
-        "reason": "Deterministic housekeeping fixer is allowlisted; tracked binary deletion remains review-only."
-      },
-      "rule_id": "python-cache-ignore",
-      "schema_version": "atlas-control-plane/finding/v1",
-      "severity": "warning",
-      "source": {
-        "check_id": "python-cache-ignore",
-        "producer": "atlas-dep-audit",
-        "producer_version": "1.1.0"
-      },
-      "subject": {
-        "repository": "AtlasReaper311/specular-sentinel"
-      }
-    },
-    {
-      "category": "policy",
-      "detected_at": "2026-08-12T21:34:37Z",
-      "evidence": {
-        "redacted": true,
-        "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643492216"
         ],
         "summary": "Missing .DS_Store ignore rule."
       },
@@ -425,11 +341,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-08-12T21:34:37Z",
+      "detected_at": "2026-08-12T21:39:54Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643492216"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -453,11 +369,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-08-12T21:34:37Z",
+      "detected_at": "2026-08-12T21:39:54Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643112486"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/31643492216"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -480,7 +396,7 @@
       }
     }
   ],
-  "generated_at": "2026-08-12T21:34:37Z",
+  "generated_at": "2026-08-12T21:39:54Z",
   "policy_digest": "sha256:2f98fe424943784593b490e70937aab046ea96b04315fe9a070bdf17a24a596e",
   "producer": "AtlasReaper311/atlas-dep-audit",
   "public_only": true,
@@ -507,7 +423,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "d443947640eac03efdf089f85c80dd7faa39a0b7",
+      "base_sha": "090604f5671a32cfa3d333141a6cc80a60e37f84",
       "repository": "AtlasReaper311/atlas-daily-digest"
     },
     {
@@ -557,7 +473,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "569b908fe93210a6aa1c1adba3575804ad4663ee",
+      "base_sha": "a99cf16a62914913e3422585651138a072a7adfa",
       "repository": "AtlasReaper311/ramone-voice-trigger"
     },
     {
@@ -567,7 +483,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "69745c5b07764fe0cf183b442df1bd73ac5a55c4",
+      "base_sha": "9fe32f118248031490c593c084d7b03dc0c97ac9",
       "repository": "AtlasReaper311/specular-sentinel"
     },
     {
@@ -588,8 +504,8 @@
   ],
   "schema_version": "atlas-control-plane/gardener-finding-bundle/v1",
   "source_commit": "87bc63e6708e0af4e07c95e5df3578e944623b44",
-  "source_report_digest": "sha256:0d0fc28ea3e8327728c66ef27f1f0c92b44f7d3fad635db11e8e34a732495b98",
+  "source_report_digest": "sha256:fdfc2989bb4772669d359d52bbdec66043684674f57c6e8e4c9146417d957394",
   "source_run_attempt": 1,
-  "source_run_id": "31643112486",
+  "source_run_id": "31643492216",
   "source_workflow": ".github/workflows/audit.yml"
 }
