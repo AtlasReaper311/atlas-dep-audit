@@ -1,15 +1,15 @@
 {
   "authority_commit": "e013aa009026452bccd6b7fc280817e80106dcc7",
-  "bundle_digest": "sha256:35337c292225cd69ce5d87a9e66f8cda7b85137ca760db7c57c8834dfd91327d",
-  "expires_at": "2026-08-18T21:22:05Z",
+  "bundle_digest": "sha256:a9ffc75a62943fa3a3d91293ba97b56d22fcdb1ff1cdf8e5e5a2aea53d2d4100",
+  "expires_at": "2026-08-25T21:28:05Z",
   "findings": [
     {
       "category": "policy",
-      "detected_at": "2026-08-17T09:22:05Z",
+      "detected_at": "2026-08-24T09:28:05Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32014759519"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32711612542"
         ],
         "summary": "Line 5 is not pinned with ==: uvicorn[standard]==0.52.1"
       },
@@ -33,11 +33,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-08-17T09:22:05Z",
+      "detected_at": "2026-08-24T09:28:05Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32014759519"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32711612542"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -61,11 +61,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-08-17T09:22:05Z",
+      "detected_at": "2026-08-24T09:28:05Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32014759519"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32711612542"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -89,11 +89,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-08-17T09:22:05Z",
+      "detected_at": "2026-08-24T09:28:05Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32014759519"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32711612542"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -117,11 +117,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-08-17T09:22:05Z",
+      "detected_at": "2026-08-24T09:28:05Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32014759519"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32711612542"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -145,11 +145,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-08-17T09:22:05Z",
+      "detected_at": "2026-08-24T09:28:05Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32014759519"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32711612542"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -173,11 +173,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-08-17T09:22:05Z",
+      "detected_at": "2026-08-24T09:28:05Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32014759519"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32711612542"
         ],
         "summary": "Line 2 is not pinned with ==: uvicorn[standard]==0.52.0"
       },
@@ -201,11 +201,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-08-17T09:22:05Z",
+      "detected_at": "2026-08-24T09:28:05Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32014759519"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32711612542"
         ],
         "summary": "Container base is tag-pinned rather than digest-pinned: python:3.12-slim"
       },
@@ -229,11 +229,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-08-17T09:22:05Z",
+      "detected_at": "2026-08-24T09:28:05Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32014759519"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32711612542"
         ],
         "summary": "Line 5 is not pinned with ==: uvicorn[standard]==0.52.0"
       },
@@ -257,11 +257,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-08-17T09:22:05Z",
+      "detected_at": "2026-08-24T09:28:05Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32014759519"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32711612542"
         ],
         "summary": "Container base is tag-pinned rather than digest-pinned: python:3.12-slim"
       },
@@ -285,11 +285,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-08-17T09:22:05Z",
+      "detected_at": "2026-08-24T09:28:05Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32014759519"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32711612542"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -313,11 +313,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-08-17T09:22:05Z",
+      "detected_at": "2026-08-24T09:28:05Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32014759519"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32711612542"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -341,11 +341,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-08-17T09:22:05Z",
+      "detected_at": "2026-08-24T09:28:05Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32014759519"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/32711612542"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -368,7 +368,7 @@
       }
     }
   ],
-  "generated_at": "2026-08-17T09:22:05Z",
+  "generated_at": "2026-08-24T09:28:05Z",
   "policy_digest": "sha256:2f98fe424943784593b490e70937aab046ea96b04315fe9a070bdf17a24a596e",
   "producer": "AtlasReaper311/atlas-dep-audit",
   "public_only": true,
@@ -390,12 +390,12 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "4ebf72a02a3ef00d5faedbfd5eef52e5ca36ae2c",
+      "base_sha": "ae9ad4a47a2409fe5c1e577ea09fe55d7d0d110b",
       "repository": "AtlasReaper311/atlas-corpus"
     },
     {
       "base_branch": "main",
-      "base_sha": "090604f5671a32cfa3d333141a6cc80a60e37f84",
+      "base_sha": "a617263c6f7dc444ef1b0cb574c15555fbda8ea4",
       "repository": "AtlasReaper311/atlas-daily-digest"
     },
     {
@@ -410,7 +410,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "7cf8924342913902232108fe517834a86160eef1",
+      "base_sha": "5cee2473413af303036b31332df0c880f1743525",
       "repository": "AtlasReaper311/atlas-notify"
     },
     {
@@ -420,7 +420,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "bd496cc0e6da79e12ca4471ecfefdb282cde0987",
+      "base_sha": "48a993e32691ddb89d989f24b401448967bd8f35",
       "repository": "AtlasReaper311/atlas-systems"
     },
     {
@@ -435,7 +435,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "a69d0a57b4359e17b1f4bd3dfa2e1f3c3e43e029",
+      "base_sha": "49cea43037e37ce49b52a10e1cd0336bfac4eb48",
       "repository": "AtlasReaper311/ramone-edge"
     },
     {
@@ -476,8 +476,8 @@
   ],
   "schema_version": "atlas-control-plane/gardener-finding-bundle/v1",
   "source_commit": "87bc63e6708e0af4e07c95e5df3578e944623b44",
-  "source_report_digest": "sha256:0abd5bccc2774793bda65a5c9fab2b21f1909ada4113289e82fa1325b91a8d99",
+  "source_report_digest": "sha256:834fe60705dba3c7d403a55cb3ff4489db85c9bd6a6223e66a5056ec05982a15",
   "source_run_attempt": 1,
-  "source_run_id": "32014759519",
+  "source_run_id": "32711612542",
   "source_workflow": ".github/workflows/audit.yml"
 }
