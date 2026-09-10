@@ -1,43 +1,71 @@
 {
   "authority_commit": "e013aa009026452bccd6b7fc280817e80106dcc7",
-  "bundle_digest": "sha256:7c0859b2dc103a115f33420f99553d14b9217f3eda275196e8fd2066d81b6177",
-  "expires_at": "2026-09-09T02:25:40Z",
+  "bundle_digest": "sha256:e0b906bd07f46dafc4fed1a2c94310c97403108533c27b12dcf95a54eaa90b2e",
+  "expires_at": "2026-09-12T06:57:02Z",
   "findings": [
     {
-      "category": "policy",
-      "detected_at": "2026-09-07T14:25:40Z",
+      "category": "security",
+      "detected_at": "2026-09-10T18:57:02Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34132799293"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
         ],
-        "summary": "Line 5 is not pinned with ==: uvicorn[standard]==0.52.4"
+        "summary": "GHSA-rgj7-g3m4-5g8c affects sharp 0.35.2."
       },
-      "fingerprint": "sha256:2ac2bc9ddebfe7fe64b1aaf3e5ecec86927d76c564bbb7cff961f3bb21301e90",
-      "location": "requirements.txt",
+      "fingerprint": "sha256:2e896128f5c293add1c23d56c2f13ec6491ae2b346744d8c70a825e30cd19d8e",
+      "location": "package-lock.json",
       "remediation": {
         "eligible": false,
-        "reason": "No deterministic Gardener fixer is approved for this audit rule."
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
       },
-      "rule_id": "python-unpinned",
+      "rule_id": "dependency-vulnerability",
       "schema_version": "atlas-control-plane/finding/v1",
       "severity": "warning",
       "source": {
-        "check_id": "python-unpinned",
+        "check_id": "dependency-vulnerability",
         "producer": "atlas-dep-audit",
         "producer_version": "1.1.0"
       },
       "subject": {
-        "repository": "AtlasReaper311/atlas-corpus"
+        "repository": "AtlasReaper311/atlas-quota-watch"
       }
     },
     {
       "category": "security",
-      "detected_at": "2026-09-07T14:25:40Z",
+      "detected_at": "2026-09-10T18:57:02Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34132799293"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
+        ],
+        "summary": "GHSA-rgj7-g3m4-5g8c affects sharp 0.35.2."
+      },
+      "fingerprint": "sha256:3547c30d84757331d8909eb77433aafe1f59586e867576bfab5c80b4f8c5b67c",
+      "location": "package-lock.json",
+      "remediation": {
+        "eligible": false,
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
+      },
+      "rule_id": "dependency-vulnerability",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "dependency-vulnerability",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/deploy-watch"
+      }
+    },
+    {
+      "category": "security",
+      "detected_at": "2026-09-10T18:57:02Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -61,11 +89,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-07T14:25:40Z",
+      "detected_at": "2026-09-10T18:57:02Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34132799293"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -89,11 +117,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-07T14:25:40Z",
+      "detected_at": "2026-09-10T18:57:02Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34132799293"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -117,11 +145,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-07T14:25:40Z",
+      "detected_at": "2026-09-10T18:57:02Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34132799293"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -145,11 +173,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-07T14:25:40Z",
+      "detected_at": "2026-09-10T18:57:02Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34132799293"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -173,39 +201,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-09-07T14:25:40Z",
+      "detected_at": "2026-09-10T18:57:02Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34132799293"
-        ],
-        "summary": "Line 2 is not pinned with ==: uvicorn[standard]==0.52.3"
-      },
-      "fingerprint": "sha256:87ce2893e608cc564eefaa93762195ab4ef02bc729c45a2719d66ba030349adc",
-      "location": "local/requirements.txt",
-      "remediation": {
-        "eligible": false,
-        "reason": "No deterministic Gardener fixer is approved for this audit rule."
-      },
-      "rule_id": "python-unpinned",
-      "schema_version": "atlas-control-plane/finding/v1",
-      "severity": "warning",
-      "source": {
-        "check_id": "python-unpinned",
-        "producer": "atlas-dep-audit",
-        "producer_version": "1.1.0"
-      },
-      "subject": {
-        "repository": "AtlasReaper311/specular-telemetry"
-      }
-    },
-    {
-      "category": "policy",
-      "detected_at": "2026-09-07T14:25:40Z",
-      "evidence": {
-        "redacted": true,
-        "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34132799293"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
         ],
         "summary": "Container base is tag-pinned rather than digest-pinned: python:3.12-slim"
       },
@@ -229,11 +229,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-07T14:25:40Z",
+      "detected_at": "2026-09-10T18:57:02Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34132799293"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
         ],
         "summary": "GHSA-2wm9-hf6c-p5cr affects chromadb 0.5.23."
       },
@@ -256,40 +256,40 @@
       }
     },
     {
-      "category": "policy",
-      "detected_at": "2026-09-07T14:25:40Z",
+      "category": "security",
+      "detected_at": "2026-09-10T18:57:02Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34132799293"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
         ],
-        "summary": "Line 5 is not pinned with ==: uvicorn[standard]==0.52.3"
+        "summary": "GHSA-rgj7-g3m4-5g8c affects sharp 0.35.2."
       },
-      "fingerprint": "sha256:9ade6e7234fb77741901144592d316a8f1faa44eafc5aa9f2883ac6e676c58a7",
-      "location": "requirements.txt",
+      "fingerprint": "sha256:98321c65ae4a8b7a8b48006598a966d97e3cc42686603852b518d68e8fa63a32",
+      "location": "package-lock.json",
       "remediation": {
         "eligible": false,
-        "reason": "No deterministic Gardener fixer is approved for this audit rule."
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
       },
-      "rule_id": "python-unpinned",
+      "rule_id": "dependency-vulnerability",
       "schema_version": "atlas-control-plane/finding/v1",
       "severity": "warning",
       "source": {
-        "check_id": "python-unpinned",
+        "check_id": "dependency-vulnerability",
         "producer": "atlas-dep-audit",
         "producer_version": "1.1.0"
       },
       "subject": {
-        "repository": "AtlasReaper311/ramone-memory"
+        "repository": "AtlasReaper311/github-pulse"
       }
     },
     {
       "category": "security",
-      "detected_at": "2026-09-07T14:25:40Z",
+      "detected_at": "2026-09-10T18:57:02Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34132799293"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
         ],
         "summary": "GHSA-2wm9-hf6c-p5cr affects chromadb 0.5.23."
       },
@@ -313,11 +313,11 @@
     },
     {
       "category": "policy",
-      "detected_at": "2026-09-07T14:25:40Z",
+      "detected_at": "2026-09-10T18:57:02Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34132799293"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
         ],
         "summary": "Container base is tag-pinned rather than digest-pinned: python:3.12-slim"
       },
@@ -341,11 +341,39 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-07T14:25:40Z",
+      "detected_at": "2026-09-10T18:57:02Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34132799293"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
+        ],
+        "summary": "GHSA-rgj7-g3m4-5g8c affects sharp 0.35.2."
+      },
+      "fingerprint": "sha256:c98b740a2767144401fa47996e1c11dad53a1eea5d1b81cc8aafd17fea6e5c49",
+      "location": "package-lock.json",
+      "remediation": {
+        "eligible": false,
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
+      },
+      "rule_id": "dependency-vulnerability",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "dependency-vulnerability",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/site-pulse"
+      }
+    },
+    {
+      "category": "security",
+      "detected_at": "2026-09-10T18:57:02Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -369,11 +397,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-07T14:25:40Z",
+      "detected_at": "2026-09-10T18:57:02Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34132799293"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -397,11 +425,39 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-07T14:25:40Z",
+      "detected_at": "2026-09-10T18:57:02Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34132799293"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
+        ],
+        "summary": "GHSA-rgj7-g3m4-5g8c affects sharp 0.35.2."
+      },
+      "fingerprint": "sha256:ef4c5837d4d5465e7ccef47c4e3d4632e3af0dc6182e6982ae232919e5466f2a",
+      "location": "package-lock.json",
+      "remediation": {
+        "eligible": false,
+        "reason": "Dependency and lockfile changes are outside the initial automatic-remediation policy."
+      },
+      "rule_id": "dependency-vulnerability",
+      "schema_version": "atlas-control-plane/finding/v1",
+      "severity": "warning",
+      "source": {
+        "check_id": "dependency-vulnerability",
+        "producer": "atlas-dep-audit",
+        "producer_version": "1.1.0"
+      },
+      "subject": {
+        "repository": "AtlasReaper311/atlas-notify"
+      }
+    },
+    {
+      "category": "security",
+      "detected_at": "2026-09-10T18:57:02Z",
+      "evidence": {
+        "redacted": true,
+        "references": [
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34517343012"
         ],
         "summary": "GHSA-mh99-v99m-4gvg affects brace-expansion 5.0.7."
       },
@@ -424,7 +480,7 @@
       }
     }
   ],
-  "generated_at": "2026-09-07T14:25:40Z",
+  "generated_at": "2026-09-10T18:57:02Z",
   "policy_digest": "sha256:2f98fe424943784593b490e70937aab046ea96b04315fe9a070bdf17a24a596e",
   "producer": "AtlasReaper311/atlas-dep-audit",
   "public_only": true,
@@ -476,12 +532,12 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "3f311dc2ff8c5a31f2c9579fa7325aa932f32637",
+      "base_sha": "c32a22072de482b4c7e5279a58bdc29ecabf5fe2",
       "repository": "AtlasReaper311/atlas-systems"
     },
     {
       "base_branch": "main",
-      "base_sha": "c143b3d2768a8d017cb9e9029610c9780e76ca89",
+      "base_sha": "31db9762de1b87d70e73e0eb2a9a4f29605addec",
       "repository": "AtlasReaper311/deploy-watch"
     },
     {
@@ -531,9 +587,9 @@
     }
   ],
   "schema_version": "atlas-control-plane/gardener-finding-bundle/v1",
-  "source_commit": "87bc63e6708e0af4e07c95e5df3578e944623b44",
-  "source_report_digest": "sha256:23a24144b247baf33998a6108f4290aa91df489e14a07ad19becf4a989c29754",
+  "source_commit": "5754f68b6ad02e8f9bd161f0abaaac66d02ffb83",
+  "source_report_digest": "sha256:32cf5ba4f3545392f317104a7c0fcdb0769b1f1c6c4fc173ebe1dfe8009c9fca",
   "source_run_attempt": 1,
-  "source_run_id": "34132799293",
+  "source_run_id": "34517343012",
   "source_workflow": ".github/workflows/audit.yml"
 }
