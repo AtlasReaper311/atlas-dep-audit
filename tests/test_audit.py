@@ -44,6 +44,40 @@ class AuditTests(unittest.TestCase):
             self.assertEqual(1, len(findings))
             self.assertEqual("python-unpinned", findings[0].rule)
 
+    def test_requirements_accepts_exact_pins_with_extras_and_markers(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            requirements = root / "requirements.txt"
+            requirements.write_text(
+                "uvicorn[standard]==0.52.4\n"
+                "fastapi==0.115.0 ; python_version >= '3.12'\n",
+                encoding="utf-8",
+            )
+            components, findings = audit.requirements_components(
+                requirements,
+                root,
+                "owner/repo",
+            )
+            self.assertEqual([], findings)
+            self.assertEqual(
+                [("fastapi", "0.115.0"), ("uvicorn", "0.52.4")],
+                sorted((item.name, item.version) for item in components),
+            )
+
+    def test_requirements_extras_still_require_exact_pin(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            requirements = root / "requirements.txt"
+            requirements.write_text("uvicorn[standard]>=0.52.4\n", encoding="utf-8")
+            components, findings = audit.requirements_components(
+                requirements,
+                root,
+                "owner/repo",
+            )
+            self.assertEqual([], components)
+            self.assertEqual(1, len(findings))
+            self.assertEqual("python-unpinned", findings[0].rule)
+
     def test_action_pinning(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
