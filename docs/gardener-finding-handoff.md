@@ -36,6 +36,10 @@ Existing audit results are also projected:
 - unsupported policy rules remain visible with `remediation.eligible=false`;
 - unknown or malformed rule and path values are normalized to bounded generic values rather than becoming executable input.
 
+`remediation.eligible=false` means the Finding is evidence, not failed remediation. Gardener validates the repository and snapshot, records the Finding as a non-actionable observation, and does not select a fixer or attempt a target write. A refusal is reserved for an invalid controller input or a Finding that was marked eligible but could not be safely processed.
+
+Python requirement parsing accepts exact PEP 508 pins with extras, for example `uvicorn[standard]==0.52.4`. Extras do not make an exact `==` pin unpinned; range constraints such as `>=` remain policy findings.
+
 Findings are data, never commands.
 
 ## Attestation and publication
