@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 50
     env:
-      AUTHORITY_SHA: e013aa009026452bccd6b7fc280817e80106dcc7
+      AUTHORITY_SHA: 11e7a727590aa5376e766416b1e6a83fb6fd98ef
       ATLAS_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra
     steps:
       - name: Check out audit repository
@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
         with:
           repository: AtlasReaper311/atlas-infra
-          ref: e013aa009026452bccd6b7fc280817e80106dcc7
+          ref: 11e7a727590aa5376e766416b1e6a83fb6fd98ef
           path: .atlas-infra
           persist-credentials: false
 
@@ -45,6 +45,7 @@ jobs:
           python3 -m py_compile audit.py
           python3 -m py_compile private_repository_audit.py
           python3 -m py_compile contract_validation.py
+          python3 -m py_compile gardener_candidates.py
           python3 -m py_compile gardener_findings.py
           python3 -m py_compile notify.py
           python3 -m py_compile secret_watch.py
@@ -61,7 +62,7 @@ jobs:
           url = "https://raw.githubusercontent.com/AtlasReaper311/atlas-api-public/main/data/public-repositories.json"
           request = urllib.request.Request(
               url,
-              headers={"User-Agent": "atlas-dep-audit/1.1"},
+              headers={"User-Agent": "atlas-dep-audit/1.2"},
           )
           with urllib.request.urlopen(request, timeout=30) as response:
               inventory = json.load(response)
@@ -107,7 +108,7 @@ jobs:
         run: |
           set -euo pipefail
           test -s reports/report.json
-          python3 gardener_findings.py \
+          python3 gardener_candidates.py \
             --report reports/report.json \
             --work-dir work \
             --infra-root "$ATLAS_INFRA_ROOT" \
