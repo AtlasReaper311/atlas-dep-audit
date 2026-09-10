@@ -26,8 +26,8 @@ import secret_watch
 
 FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 USES_LINE = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
-REQUIREMENT = re.compile(r"^([A-Za-z0-9_.-]+)\s*==\s*([^\s;]+)")
 PEP508_PIN = re.compile(r"^([A-Za-z0-9_.-]+)(?:\[[^]]+\])?\s*==\s*([^\s;]+)")
+REQUIREMENT = PEP508_PIN
 SEVERITY_ORDER = {
     "unknown": 0,
     "low": 1,
