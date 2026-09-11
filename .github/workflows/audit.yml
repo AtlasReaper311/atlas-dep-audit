@@ -161,6 +161,8 @@ jobs:
     if: needs.audit.result == 'success' && vars.ATLAS_GARDENER_HANDOFF_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      AUTHORITY_SHA: 9ac88f38c2fa370d566421f0909db85b25a309ea
     permissions:
       contents: write
       id-token: write
