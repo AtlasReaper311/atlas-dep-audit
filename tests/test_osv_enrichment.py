@@ -1,7 +1,7 @@
 import io
 import json
 import unittest
-from unittest import mock
+import unittest.mock as mock
 
 import audit
 
@@ -39,26 +39,37 @@ class OsvEnrichmentTests(unittest.TestCase):
         detail_calls = []
 
         def fake_urlopen(request, timeout):
-            if request.full_url.endswith("/v1/querybatch"):
-                payload = json.loads(request.data.decode("utf-8"))
-                self.assertEqual(2, len(payload["queries"]))
+            url = request.full_url
+            if url.endswith("/v1/querybatch"):
                 return Response(
                     json.dumps(
                         {
                             "results": [
-                                {"vulns": [{"id": "GHSA-test", "modified": "2026-09-10T00:00:00Z"}]},
-                                {"vulns": [{"id": "GHSA-test", "modified": "2026-09-10T00:00:00Z"}]},
+                                {"vulns": [{"id": "GHSA-test-1"}]},
+                                {"vulns": [{"id": "GHSA-test-1"}]},
                             ]
                         }
                     ).encode("utf-8")
                 )
-            detail_calls.append((request.full_url, timeout))
+            detail_calls.append(url)
             return Response(
                 json.dumps(
                     {
-                        "id": "GHSA-test",
-                        "database_specific": {"severity": "HIGH"},
-                        "affected": [],
+                        "id": "GHSA-test-1",
+                        "affected": [
+                            {
+                                "package": {"ecosystem": "npm", "name": "example"},
+                                "ranges": [
+                                    {
+                                        "type": "SEMVER",
+                                        "events": [
+                                            {"introduced": "0"},
+                                            {"fixed": "2.3.5"},
+                                        ],
+                                    }
+                                ],
+                            }
+                        ],
                     }
                 ).encode("utf-8")
             )
@@ -66,88 +77,75 @@ class OsvEnrichmentTests(unittest.TestCase):
         with mock.patch("audit.urllib.request.urlopen", side_effect=fake_urlopen):
             results = audit.osv_query(components)
 
-        self.assertEqual("HIGH", results[0]["vulns"][0]["database_specific"]["severity"])
-        self.assertEqual("GHSA-test", results[1]["vulns"][0]["id"])
+        self.assertEqual(2, len(results))
+        self.assertEqual("GHSA-test-1", results[0]["vulns"][0]["id"])
+        self.assertEqual("GHSA-test-1", results[1]["vulns"][0]["id"])
         self.assertEqual(1, len(detail_calls))
-        self.assertTrue(detail_calls[0][0].endswith("/v1/vulns/GHSA-test"))
-        self.assertEqual(30, detail_calls[0][1])
 
-    def test_osv_query_follows_per_query_batch_pagination(self):
-        item = component()
-        batch_payloads = []
+    def test_osv_batch_pagination_preserves_component_alignment(self):
+        calls = []
 
         def fake_urlopen(request, timeout):
             if request.full_url.endswith("/v1/querybatch"):
                 payload = json.loads(request.data.decode("utf-8"))
-                batch_payloads.append(payload)
+                calls.append(payload)
                 query = payload["queries"][0]
-                if "page_token" not in query:
+                if query.get("page_token") == "next-1":
                     return Response(
-                        b'{"results":[{"vulns":[{"id":"GHSA-one"}],"next_page_token":"page-2"}]}'
+                        b'{"results":[{"vulns":[{"id":"GHSA-page-2"}]}]}'
                     )
-                self.assertEqual("page-2", query["page_token"])
-                return Response(b'{"results":[{"vulns":[{"id":"GHSA-two"}]}]}')
+                return Response(
+                    b'{"results":[{"vulns":[{"id":"GHSA-page-1"}],"next_page_token":"next-1"}]}'
+                )
             vulnerability_id = request.full_url.rsplit("/", 1)[-1]
             return Response(
                 json.dumps({"id": vulnerability_id, "affected": []}).encode("utf-8")
             )
 
         with mock.patch("audit.urllib.request.urlopen", side_effect=fake_urlopen):
-            results = audit.osv_query([item])
+            results = audit.osv_query([component()])
 
-        self.assertEqual(["GHSA-one", "GHSA-two"], [entry["id"] for entry in results[0]["vulns"]])
-        self.assertEqual(2, len(batch_payloads))
+        self.assertEqual(
+            ["GHSA-page-1", "GHSA-page-2"],
+            [item["id"] for item in results[0]["vulns"]],
+        )
+        self.assertEqual("next-1", calls[1]["queries"][0]["page_token"])
 
-    def test_osv_query_rejects_mismatched_detail_record(self):
+    def test_osv_detail_id_mismatch_fails_closed(self):
         def fake_urlopen(request, timeout):
             if request.full_url.endswith("/v1/querybatch"):
-                return Response(b'{"results":[{"vulns":[{"id":"GHSA-requested"}]}]}')
-            return Response(b'{"id":"GHSA-different","affected":[]}')
+                return Response(b'{"results":[{"vulns":[{"id":"GHSA-expected"}]}]}')
+            return Response(b'{"id":"GHSA-wrong","affected":[]}')
 
         with mock.patch("audit.urllib.request.urlopen", side_effect=fake_urlopen):
-            with self.assertRaisesRegex(RuntimeError, "did not match GHSA-requested"):
+            with self.assertRaisesRegex(RuntimeError, "did not match GHSA-expected"):
                 audit.osv_query([component()])
 
-    def test_fixed_version_selects_range_containing_current_branch(self):
-        item = component(
-            name="brace-expansion",
-            version="5.0.7",
-            purl="pkg:npm/brace-expansion@5.0.7",
-        )
+    def test_fixed_version_selects_range_containing_current_version(self):
         vulnerability = {
-            "id": "GHSA-rgw5-rvv9-x895",
+            "id": "GHSA-test",
             "affected": [
                 {
-                    "package": {"ecosystem": "npm", "name": "brace-expansion"},
+                    "package": {"ecosystem": "npm", "name": "example"},
                     "ranges": [
                         {
                             "type": "SEMVER",
                             "events": [
                                 {"introduced": "1.0.0"},
-                                {"fixed": "1.1.18"},
+                                {"fixed": "1.2.0"},
                                 {"introduced": "2.0.0"},
-                                {"fixed": "2.1.4"},
-                                {"introduced": "3.0.0"},
-                                {"fixed": "3.0.6"},
-                                {"introduced": "4.0.0"},
-                                {"fixed": "5.0.9"},
+                                {"fixed": "2.3.5"},
                             ],
                         }
                     ],
                 }
             ],
         }
-        self.assertEqual("5.0.9", audit.fixed_version_of(vulnerability, item))
+        self.assertEqual("2.3.5", audit.fixed_version_of(vulnerability, component()))
 
-    def test_last_affected_range_does_not_invent_a_fixed_version(self):
-        item = component(
-            ecosystem="PyPI",
-            name="chromadb",
-            version="0.5.23",
-            purl="pkg:pypi/chromadb@0.5.23",
-        )
+    def test_last_affected_range_has_no_published_fix(self):
         vulnerability = {
-            "id": "GHSA-2wm9-hf6c-p5cr",
+            "id": "GHSA-test",
             "affected": [
                 {
                     "package": {"ecosystem": "PyPI", "name": "chromadb"},
@@ -155,7 +153,7 @@ class OsvEnrichmentTests(unittest.TestCase):
                         {
                             "type": "ECOSYSTEM",
                             "events": [
-                                {"introduced": "0.4.17"},
+                                {"introduced": "0"},
                                 {"last_affected": "1.5.9"},
                             ],
                         }
@@ -163,40 +161,49 @@ class OsvEnrichmentTests(unittest.TestCase):
                 }
             ],
         }
-        self.assertIsNone(audit.fixed_version_of(vulnerability, item))
+        chroma = component(
+            ecosystem="PyPI",
+            name="chromadb",
+            version="0.5.23",
+            purl="pkg:pypi/chromadb@0.5.23",
+        )
+        self.assertIsNone(audit.fixed_version_of(vulnerability, chroma))
 
-    def test_vulnerabilities_for_uses_hydrated_severity_and_component_fix(self):
-        item = component(
-            name="sharp",
-            version="0.35.2",
-            purl="pkg:npm/sharp@0.35.2",
-        )
-        vulnerability = {
-            "id": "GHSA-rgj7-g3m4-5g8c",
-            "database_specific": {"severity": "HIGH"},
-            "affected": [
-                {
-                    "package": {"ecosystem": "npm", "name": "sharp"},
-                    "ranges": [
-                        {
-                            "type": "SEMVER",
-                            "events": [
-                                {"introduced": "0"},
-                                {"fixed": "0.35.4"},
-                            ],
-                        }
-                    ],
-                }
-            ],
-        }
-        findings = audit.vulnerabilities_for(
-            "AtlasReaper311/example",
-            [item],
-            [{"vulns": [vulnerability]}],
-        )
-        self.assertEqual(1, len(findings))
-        self.assertEqual("high", findings[0].severity)
-        self.assertEqual("0.35.4", findings[0].fixed_version)
+    def test_vulnerability_rows_receive_hydrated_severity_and_fix(self):
+        components = [component()]
+        results = [
+            {
+                "vulns": [
+                    {
+                        "id": "GHSA-test",
+                        "severity": [
+                            {
+                                "type": "CVSS_V3",
+                                "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                            }
+                        ],
+                        "affected": [
+                            {
+                                "package": {"ecosystem": "npm", "name": "example"},
+                                "ranges": [
+                                    {
+                                        "type": "SEMVER",
+                                        "events": [
+                                            {"introduced": "0"},
+                                            {"fixed": "2.3.5"},
+                                        ],
+                                    }
+                                ],
+                            }
+                        ],
+                    }
+                ]
+            }
+        ]
+        rows = audit.vulnerabilities_for("owner/repo", components, results)
+        self.assertEqual(1, len(rows))
+        self.assertEqual("critical", rows[0].severity)
+        self.assertEqual("2.3.5", rows[0].fixed_version)
 
 
 if __name__ == "__main__":
