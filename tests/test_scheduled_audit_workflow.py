@@ -36,10 +36,20 @@ class ScheduledAuditWorkflowTests(unittest.TestCase):
         self.assertIn("hashFiles('provenance/**') != ''", block)
         self.assertIn("if-no-files-found: error", block)
 
-    def test_real_audit_or_export_failure_still_fails_closed(self) -> None:
+    def test_blocking_findings_do_not_prevent_valid_handoff_publication(self) -> None:
+        block = step_block(self.text, "Classify audit result")
+        self.assertIn("AUDIT_OUTCOME: ${{ steps.audit.outcome }}", block)
+        self.assertIn("EXPORT_OUTCOME: ${{ steps.gardener_export.outcome }}", block)
+        self.assertIn("handoff_ready=true", block)
+        self.assertIn("blocking=true", block)
+        self.assertIn("needs.audit.outputs.handoff_ready == 'true'", self.text)
+
+    def test_final_gate_preserves_blocking_audit_and_handoff_failures(self) -> None:
         block = step_block(self.text, "Preserve blocking result")
-        self.assertIn("steps.audit.outcome == 'failure'", block)
-        self.assertIn("steps.gardener_export.outcome == 'failure'", block)
+        self.assertIn("AUDIT_BLOCKING:", block)
+        self.assertIn("HANDOFF_READY:", block)
+        self.assertIn("HANDOFF_ENABLED:", block)
+        self.assertIn("PUBLISH_RESULT:", block)
         self.assertIn("exit 1", block)
 
 
