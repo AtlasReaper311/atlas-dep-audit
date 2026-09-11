@@ -78,21 +78,34 @@ def resolve_child(packages: dict[str, Any], parent_path: str, dependency: str) -
     return None
 
 
+def _dependency_maps(parent_path: str, entry: dict[str, Any]) -> list[dict[str, Any]]:
+    names = ["dependencies", "optionalDependencies"]
+    if parent_path == "":
+        names.append("devDependencies")
+    values: list[dict[str, Any]] = []
+    for name in names:
+        mapping = entry.get(name)
+        if isinstance(mapping, dict):
+            values.append(mapping)
+    return values
+
+
 def parent_constraints(packages: dict[str, Any], child_path: str) -> list[dict[str, str]]:
     constraints: list[dict[str, str]] = []
     for parent_path, entry in packages.items():
         if not isinstance(parent_path, str) or not isinstance(entry, dict):
             continue
-        dependencies = entry.get("dependencies")
-        if not isinstance(dependencies, dict):
-            continue
-        for dependency, specifier in dependencies.items():
-            if resolve_child(packages, parent_path, str(dependency)) != child_path:
-                continue
-            if not parent_path:
-                continue
-            constraints.append({"package_path": parent_path, "specifier": str(specifier)})
-    return sorted(constraints, key=lambda item: (item["package_path"], item["specifier"]))
+        for dependencies in _dependency_maps(parent_path, entry):
+            for dependency, specifier in dependencies.items():
+                if resolve_child(packages, parent_path, str(dependency)) != child_path:
+                    continue
+                if not parent_path:
+                    continue
+                constraints.append({"package_path": parent_path, "specifier": str(specifier)})
+    return sorted(
+        {json.dumps(item, sort_keys=True): item for item in constraints}.values(),
+        key=lambda item: (item["package_path"], item["specifier"]),
+    )
 
 
 def reverse_graph(packages: dict[str, Any]) -> dict[str, set[str]]:
@@ -100,13 +113,11 @@ def reverse_graph(packages: dict[str, Any]) -> dict[str, set[str]]:
     for parent_path, entry in packages.items():
         if not isinstance(parent_path, str) or not isinstance(entry, dict):
             continue
-        dependencies = entry.get("dependencies")
-        if not isinstance(dependencies, dict):
-            continue
-        for dependency in dependencies:
-            child = resolve_child(packages, parent_path, str(dependency))
-            if child is not None:
-                parents[child].add(parent_path)
+        for dependencies in _dependency_maps(parent_path, entry):
+            for dependency in dependencies:
+                child = resolve_child(packages, parent_path, str(dependency))
+                if child is not None:
+                    parents[child].add(parent_path)
     return parents
 
 
@@ -146,15 +157,20 @@ def spec_accepts(specifier: str, target: tuple[int, int, int]) -> bool:
                 return target >= lower and target[:2] == lower[:2]
             return target >= lower and target == lower
     tokens = specifier.split()
-    if len(tokens) in {1, 2} and all(re.fullmatch(r"(?:>=|>|<=|<)[0-9]+\.[0-9]+\.[0-9]+", token) for token in tokens):
+    if len(tokens) in {1, 2} and all(
+        re.fullmatch(r"(?:>=|>|<=|<)[0-9]+\.[0-9]+\.[0-9]+", token)
+        for token in tokens
+    ):
         for token in tokens:
-            if token.startswith(">=") and not target >= semver(token[2:]):
+            bound = semver(token[2:] if token[:2] in {">=", "<="} else token[1:])
+            assert bound is not None
+            if token.startswith(">=") and target < bound:
                 return False
-            if token.startswith(">") and not target > semver(token[1:]):
+            if token.startswith(">") and not token.startswith(">=") and target <= bound:
                 return False
-            if token.startswith("<=") and not target <= semver(token[2:]):
+            if token.startswith("<=") and target > bound:
                 return False
-            if token.startswith("<") and not target < semver(token[1:]):
+            if token.startswith("<") and not token.startswith("<=") and target >= bound:
                 return False
         return True
     return False
@@ -219,7 +235,12 @@ def _replace_json_spec(text: str, dependency: str, current_spec: str, target_spe
         raise GraphCandidateError("npm package.json declaration is not uniquely line-addressable")
     index, match = matches[0]
     assert match is not None
-    lines[index] = match.group("prefix") + target_spec + match.group("suffix") + (match.group("newline") or "")
+    lines[index] = (
+        match.group("prefix")
+        + target_spec
+        + match.group("suffix")
+        + (match.group("newline") or "")
+    )
     return "".join(lines)
 
 
@@ -238,14 +259,28 @@ def _npm_environment(home: Path) -> dict[str, str]:
 
 
 def run_pinned_npm(root: Path, update_names: list[str]) -> None:
+    prefix = ["npx", "--yes", "--package", f"npm@{NPM_VERSION}", "npm"]
     commands = [
-        ["npx", "--yes", f"npm@{NPM_VERSION}", "--", "install", "--package-lock-only", "--ignore-scripts", "--no-audit", "--no-fund"]
+        prefix + [
+            "install",
+            "--package-lock-only",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund",
+        ]
     ]
     if update_names:
-        commands.append([
-            "npx", "--yes", f"npm@{NPM_VERSION}", "--", "update", *sorted(set(update_names)),
-            "--package-lock-only", "--ignore-scripts", "--no-audit", "--no-fund",
-        ])
+        commands.append(
+            prefix
+            + [
+                "update",
+                *sorted(set(update_names)),
+                "--package-lock-only",
+                "--ignore-scripts",
+                "--no-audit",
+                "--no-fund",
+            ]
+        )
     for command in commands:
         try:
             completed = subprocess.run(
@@ -267,7 +302,10 @@ def active_osv_ids(repository: str, root: Path, lock_relative: str) -> set[str]:
     lock_path = root / lock_relative
     components, _ = audit.npm_components(lock_path, root)
     results = audit.osv_query(components)
-    return {row.vulnerability_id for row in audit.vulnerabilities_for(repository, components, results)}
+    return {
+        row.vulnerability_id
+        for row in audit.vulnerabilities_for(repository, components, results)
+    }
 
 
 def build_npm_graph_candidate(
@@ -296,7 +334,9 @@ def build_npm_graph_candidate(
 
     grouped: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
     for item in items:
-        grouped[(str(item.get("dependency") or ""), str(item.get("version") or ""))].append(item)
+        grouped[
+            (str(item.get("dependency") or ""), str(item.get("version") or ""))
+        ].append(item)
 
     direct_seed: dict[str, dict[str, Any]] = {}
     transitive_seed: dict[str, dict[str, Any]] = {}
@@ -312,25 +352,32 @@ def build_npm_graph_candidate(
         target_tuple = semver(target)
         assert current_tuple is not None and target_tuple is not None
         matching_paths = [
-            path for path, entry in packages.items()
+            path
+            for path, entry in packages.items()
             if isinstance(path, str)
             and isinstance(entry, dict)
             and package_name(path, entry) == dependency
             and str(entry.get("version") or "") == current
         ]
         if len(matching_paths) != 1:
-            raise GraphCandidateError(f"{dependency}: vulnerable lock node is absent or ambiguous")
+            raise GraphCandidateError(
+                f"{dependency}: vulnerable lock node is absent or ambiguous"
+            )
         package_path = matching_paths[0]
         declaration = _declaration(package, dependency)
         if declaration is not None and package_path == f"node_modules/{dependency}":
             section, current_spec = declaration
             spec_match = SUPPORTED_SPEC_RE.fullmatch(current_spec)
             if spec_match is None:
-                raise GraphCandidateError(f"{dependency}: direct declaration uses unsupported semver syntax")
+                raise GraphCandidateError(
+                    f"{dependency}: direct declaration uses unsupported semver syntax"
+                )
             prefix = spec_match.group("prefix")
             target_spec = prefix + target
             if current_spec != target_spec:
-                manifest_text = _replace_json_spec(manifest_text, dependency, current_spec, target_spec)
+                manifest_text = _replace_json_spec(
+                    manifest_text, dependency, current_spec, target_spec
+                )
             direct_seed[dependency] = {
                 "dependency": dependency,
                 "section": section,
@@ -345,7 +392,9 @@ def build_npm_graph_candidate(
 
         constraints = parent_constraints(packages, package_path)
         if not constraints:
-            raise GraphCandidateError(f"{dependency}: no bounded parent constraint was found")
+            raise GraphCandidateError(
+                f"{dependency}: no bounded parent constraint was found"
+            )
         if all(spec_accepts(item["specifier"], target_tuple) for item in constraints):
             transitive_seed[package_path] = {
                 "dependency": dependency,
@@ -360,7 +409,9 @@ def build_npm_graph_candidate(
 
         ancestors = direct_ancestors(packages, package_path)
         if not ancestors:
-            raise GraphCandidateError(f"{dependency}: no direct ancestor can be updated within authority")
+            raise GraphCandidateError(
+                f"{dependency}: no direct ancestor can be updated within authority"
+            )
         supported_ancestor = False
         for ancestor in sorted(ancestors):
             declaration = _declaration(package, ancestor)
@@ -373,7 +424,9 @@ def build_npm_graph_candidate(
             update_names.add(ancestor)
             parent_update_ids[ancestor].update(ids)
         if not supported_ancestor:
-            raise GraphCandidateError(f"{dependency}: no supported direct ancestor declaration is available")
+            raise GraphCandidateError(
+                f"{dependency}: no supported direct ancestor declaration is available"
+            )
 
     with tempfile.TemporaryDirectory(prefix="atlas-dep-audit-adr0016-") as directory:
         temp_root = Path(directory)
@@ -387,52 +440,85 @@ def build_npm_graph_candidate(
         generated_package = read_json(temp_manifest, "generated package.json")
         generated_lock = read_json(temp_lock, "generated package-lock.json")
         generated_packages = generated_lock.get("packages")
-        if generated_lock.get("lockfileVersion") != 3 or not isinstance(generated_packages, dict):
+        if generated_lock.get("lockfileVersion") != 3 or not isinstance(
+            generated_packages, dict
+        ):
             raise GraphCandidateError("pinned npm produced an unsupported lockfile")
         active = vulnerability_checker(repository, temp_root, "package-lock.json")
         remaining = sorted(all_ids & active)
         if remaining:
             raise GraphCandidateError(
-                "post-regeneration vulnerability proof still reports: " + ", ".join(remaining)
+                "post-regeneration vulnerability proof still reports: "
+                + ", ".join(remaining)
             )
 
         direct_updates = list(direct_seed.values())
         for ancestor, ids in sorted(parent_update_ids.items()):
             original_decl = _declaration(package, ancestor)
             generated_decl = _declaration(generated_package, ancestor)
-            if original_decl is None or generated_decl is None or original_decl != generated_decl:
-                raise GraphCandidateError(f"{ancestor}: npm unexpectedly changed direct manifest declaration")
+            if (
+                original_decl is None
+                or generated_decl is None
+                or original_decl != generated_decl
+            ):
+                raise GraphCandidateError(
+                    f"{ancestor}: npm unexpectedly changed direct manifest declaration"
+                )
             section, spec = original_decl
             original_entry = packages.get(f"node_modules/{ancestor}")
             generated_entry = generated_packages.get(f"node_modules/{ancestor}")
-            if not isinstance(original_entry, dict) or not isinstance(generated_entry, dict):
-                raise GraphCandidateError(f"{ancestor}: direct ancestor lock node is unavailable")
+            if not isinstance(original_entry, dict) or not isinstance(
+                generated_entry, dict
+            ):
+                raise GraphCandidateError(
+                    f"{ancestor}: direct ancestor lock node is unavailable"
+                )
             current_version = str(original_entry.get("version") or "")
             target_version = str(generated_entry.get("version") or "")
             current_tuple = semver(current_version)
             target_tuple = semver(target_version)
-            if current_tuple is None or target_tuple is None or target_tuple <= current_tuple or target_tuple[0] != current_tuple[0]:
-                raise GraphCandidateError(f"{ancestor}: regeneration did not produce a newer same-major direct ancestor")
-            direct_updates.append({
-                "dependency": ancestor,
-                "section": section,
-                "current_version": current_version,
-                "target_version": target_version,
-                "current_spec": spec,
-                "target_spec": spec,
-                "vulnerability_ids": sorted(ids),
-            })
+            if (
+                current_tuple is None
+                or target_tuple is None
+                or target_tuple <= current_tuple
+                or target_tuple[0] != current_tuple[0]
+            ):
+                raise GraphCandidateError(
+                    f"{ancestor}: regeneration did not produce a newer same-major direct ancestor"
+                )
+            direct_updates.append(
+                {
+                    "dependency": ancestor,
+                    "section": section,
+                    "current_version": current_version,
+                    "target_version": target_version,
+                    "current_spec": spec,
+                    "target_spec": spec,
+                    "vulnerability_ids": sorted(ids),
+                }
+            )
 
         transitive_updates: list[dict[str, Any]] = []
         for package_path, operation in sorted(transitive_seed.items()):
             generated_entry = generated_packages.get(package_path)
-            if not isinstance(generated_entry, dict) or str(generated_entry.get("version") or "") != operation["target_version"]:
-                raise GraphCandidateError(f"{operation['dependency']}: npm did not resolve the exact transitive target")
+            if (
+                not isinstance(generated_entry, dict)
+                or str(generated_entry.get("version") or "")
+                != operation["target_version"]
+            ):
+                raise GraphCandidateError(
+                    f"{operation['dependency']}: npm did not resolve the exact transitive target"
+                )
             transitive_updates.append(operation)
 
         if not direct_updates and not transitive_updates:
-            raise GraphCandidateError("regeneration produced no authorised graph operations")
-        if manifest_after == manifest_path.read_bytes() and lock_after == lock_path.read_bytes():
+            raise GraphCandidateError(
+                "regeneration produced no authorised graph operations"
+            )
+        if (
+            manifest_after == manifest_path.read_bytes()
+            and lock_after == lock_path.read_bytes()
+        ):
             raise GraphCandidateError("regeneration produced no source change")
 
         return {
@@ -440,7 +526,9 @@ def build_npm_graph_candidate(
             "manifest_file": manifest_relative,
             "lockfile_file": lock_relative,
             "npm_version": NPM_VERSION,
-            "direct_updates": sorted(direct_updates, key=lambda item: item["dependency"]),
+            "direct_updates": sorted(
+                direct_updates, key=lambda item: item["dependency"]
+            ),
             "transitive_updates": transitive_updates,
             "vulnerability_ids": sorted(all_ids),
             "target_manifest_sha256": sha256_bytes(manifest_after),
@@ -458,9 +546,17 @@ def _severity(items: list[dict[str, Any]]) -> str:
 
 
 def _finding(
-    *, repository: str, source_file: str, items: list[dict[str, Any]], eligible: bool,
-    reason: str, disposition: str, candidate: dict[str, Any] | None, detected_at: str,
-    run_url: str, rules: dict[str, Any],
+    *,
+    repository: str,
+    source_file: str,
+    items: list[dict[str, Any]],
+    eligible: bool,
+    reason: str,
+    disposition: str,
+    candidate: dict[str, Any] | None,
+    detected_at: str,
+    run_url: str,
+    rules: dict[str, Any],
 ) -> dict[str, Any]:
     finding = base.make_finding(
         repository=repository,
@@ -470,8 +566,8 @@ def _finding(
         severity=_severity(items),
         location=base.safe_location(source_file),
         summary=(
-            f"{len({str(item.get('vulnerability_id') or 'unknown') for item in items})} known vulnerability "
-            f"identifier(s) affect dependencies recorded in {source_file}."
+            f"{len({str(item.get('vulnerability_id') or 'unknown') for item in items})} "
+            f"known vulnerability identifier(s) affect dependencies recorded in {source_file}."
         ),
         eligible=eligible,
         reason=reason,
@@ -486,8 +582,13 @@ def _finding(
 
 
 def dependency_findings(
-    report: dict[str, Any], *, repositories: dict[str, Path], covered: set[str],
-    detected_at: str, run_url: str, rules: dict[str, Any],
+    report: dict[str, Any],
+    *,
+    repositories: dict[str, Path],
+    covered: set[str],
+    detected_at: str,
+    run_url: str,
+    rules: dict[str, Any],
     npm_runner: Callable[[Path, list[str]], None] = run_pinned_npm,
     vulnerability_checker: Callable[[str, Path, str], set[str]] = active_osv_ids,
 ) -> list[dict[str, Any]]:
@@ -497,46 +598,95 @@ def dependency_findings(
     groups: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
     for item in raw:
         if isinstance(item, dict) and item.get("repo") in covered:
-            groups[(str(item.get("repo")), str(item.get("source_file") or "repository"))].append(item)
+            groups[
+                (
+                    str(item.get("repo")),
+                    str(item.get("source_file") or "repository"),
+                )
+            ].append(item)
 
     findings: list[dict[str, Any]] = []
     for (repository, source_file), items in sorted(groups.items()):
         root = repositories.get(repository)
         if root is None:
-            findings.append(_finding(
-                repository=repository, source_file=source_file, items=items, eligible=False,
-                reason="exact audited checkout is unavailable", disposition="unsupported-remediation",
-                candidate=None, detected_at=detected_at, run_url=run_url, rules=rules,
-            ))
+            findings.append(
+                _finding(
+                    repository=repository,
+                    source_file=source_file,
+                    items=items,
+                    eligible=False,
+                    reason="exact audited checkout is unavailable",
+                    disposition="unsupported-remediation",
+                    candidate=None,
+                    detected_at=detected_at,
+                    run_url=run_url,
+                    rules=rules,
+                )
+            )
             continue
         if source_file.endswith("package-lock.json"):
             try:
                 candidate = build_npm_graph_candidate(
-                    repository, root, source_file, items,
-                    npm_runner=npm_runner, vulnerability_checker=vulnerability_checker,
+                    repository,
+                    root,
+                    source_file,
+                    items,
+                    npm_runner=npm_runner,
+                    vulnerability_checker=vulnerability_checker,
                 )
-                findings.append(_finding(
-                    repository=repository, source_file=source_file, items=items, eligible=True,
-                    reason="Deterministic ADR-0016 npm graph remediation is available.",
-                    disposition="remediation-available", candidate=candidate,
-                    detected_at=detected_at, run_url=run_url, rules=rules,
-                ))
+                findings.append(
+                    _finding(
+                        repository=repository,
+                        source_file=source_file,
+                        items=items,
+                        eligible=True,
+                        reason="Deterministic ADR-0016 npm graph remediation is available.",
+                        disposition="remediation-available",
+                        candidate=candidate,
+                        detected_at=detected_at,
+                        run_url=run_url,
+                        rules=rules,
+                    )
+                )
             except GraphCandidateError as error:
-                findings.append(_finding(
-                    repository=repository, source_file=source_file, items=items, eligible=False,
-                    reason=str(error)[:240], disposition=error.disposition, candidate=None,
-                    detected_at=detected_at, run_url=run_url, rules=rules,
-                ))
+                findings.append(
+                    _finding(
+                        repository=repository,
+                        source_file=source_file,
+                        items=items,
+                        eligible=False,
+                        reason=str(error)[:240],
+                        disposition=error.disposition,
+                        candidate=None,
+                        detected_at=detected_at,
+                        run_url=run_url,
+                        rules=rules,
+                    )
+                )
             continue
 
         if Path(source_file).name == "requirements.txt":
-            if len({str(item.get("dependency") or "") for item in items}) != 1 or len({str(item.get("version") or "") for item in items}) != 1:
-                findings.append(_finding(
-                    repository=repository, source_file=source_file, items=items, eligible=False,
-                    reason="requirements.txt contains multiple vulnerability groups requiring separate review",
-                    disposition="manual-remediation-required", candidate=None,
-                    detected_at=detected_at, run_url=run_url, rules=rules,
-                ))
+            if (
+                len({str(item.get("dependency") or "") for item in items}) != 1
+                or len({str(item.get("version") or "") for item in items}) != 1
+            ):
+                findings.append(
+                    _finding(
+                        repository=repository,
+                        source_file=source_file,
+                        items=items,
+                        eligible=False,
+                        reason=(
+                            "requirements.txt contains multiple vulnerability groups "
+                            "requiring separate review"
+                        ),
+                        disposition="manual-remediation-required",
+                        candidate=None,
+                        detected_at=detected_at,
+                        run_url=run_url,
+                        rules=rules,
+                    )
+                )
                 continue
             dependency = str(items[0].get("dependency") or "")
             current = str(items[0].get("version") or "")
@@ -544,42 +694,86 @@ def dependency_findings(
                 target, ids = _same_major_target(items)
                 path = root / source_file
                 matches = []
-                pattern = re.compile(rf"^\s*{re.escape(dependency)}(?:\[[^]]+\])?\s*==\s*{re.escape(current)}(?:\s|$)", re.IGNORECASE)
-                for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                pattern = re.compile(
+                    rf"^\s*{re.escape(dependency)}(?:\[[^]]+\])?\s*==\s*"
+                    rf"{re.escape(current)}(?:\s|$)",
+                    re.IGNORECASE,
+                )
+                for number, line in enumerate(
+                    path.read_text(encoding="utf-8").splitlines(), 1
+                ):
                     if pattern.search(line):
                         matches.append(number)
                 if len(matches) != 1:
-                    raise GraphCandidateError("Python direct dependency is absent or ambiguous")
+                    raise GraphCandidateError(
+                        "Python direct dependency is absent or ambiguous"
+                    )
                 current_tuple = semver(current)
                 target_tuple = semver(target)
                 assert current_tuple is not None and target_tuple is not None
                 candidate = {
-                    "kind": "dependency-update", "ecosystem": "PyPI", "dependency": dependency,
-                    "current_version": current, "target_version": target, "source_file": source_file,
-                    "update_class": "patch" if current_tuple[:2] == target_tuple[:2] else "minor",
-                    "direct": True, "vulnerability_ids": ids,
+                    "kind": "dependency-update",
+                    "ecosystem": "PyPI",
+                    "dependency": dependency,
+                    "current_version": current,
+                    "target_version": target,
+                    "source_file": source_file,
+                    "update_class": (
+                        "patch"
+                        if current_tuple[:2] == target_tuple[:2]
+                        else "minor"
+                    ),
+                    "direct": True,
+                    "vulnerability_ids": ids,
                 }
                 finding = _finding(
-                    repository=repository, source_file=source_file, items=items, eligible=True,
+                    repository=repository,
+                    source_file=source_file,
+                    items=items,
+                    eligible=True,
                     reason="Structured same-major direct Python remediation is available.",
-                    disposition="remediation-available", candidate=candidate,
-                    detected_at=detected_at, run_url=run_url, rules=rules,
+                    disposition="remediation-available",
+                    candidate=candidate,
+                    detected_at=detected_at,
+                    run_url=run_url,
+                    rules=rules,
                 )
                 finding["location"] = f"{source_file}:{matches[0]}"
                 findings.append(finding)
             except (GraphCandidateError, OSError, UnicodeError) as error:
-                disposition = error.disposition if isinstance(error, GraphCandidateError) else "unsupported-remediation"
-                findings.append(_finding(
-                    repository=repository, source_file=source_file, items=items, eligible=False,
-                    reason=str(error)[:240], disposition=disposition, candidate=None,
-                    detected_at=detected_at, run_url=run_url, rules=rules,
-                ))
+                disposition = (
+                    error.disposition
+                    if isinstance(error, GraphCandidateError)
+                    else "unsupported-remediation"
+                )
+                findings.append(
+                    _finding(
+                        repository=repository,
+                        source_file=source_file,
+                        items=items,
+                        eligible=False,
+                        reason=str(error)[:240],
+                        disposition=disposition,
+                        candidate=None,
+                        detected_at=detected_at,
+                        run_url=run_url,
+                        rules=rules,
+                    )
+                )
             continue
 
-        findings.append(_finding(
-            repository=repository, source_file=source_file, items=items, eligible=False,
-            reason="dependency packaging format is outside ADR-0016 authority",
-            disposition="unsupported-remediation", candidate=None,
-            detected_at=detected_at, run_url=run_url, rules=rules,
-        ))
+        findings.append(
+            _finding(
+                repository=repository,
+                source_file=source_file,
+                items=items,
+                eligible=False,
+                reason="dependency packaging format is outside ADR-0016 authority",
+                disposition="unsupported-remediation",
+                candidate=None,
+                detected_at=detected_at,
+                run_url=run_url,
+                rules=rules,
+            )
+        )
     return findings
