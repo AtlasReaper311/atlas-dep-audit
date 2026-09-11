@@ -28,6 +28,9 @@ FULL_SHA = re.compile(r"^[0-9a-f]{40}$")
 USES_LINE = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
 PEP508_PIN = re.compile(r"^([A-Za-z0-9_.-]+)(?:\[[^]]+\])?\s*==\s*([^\s;]+)")
 REQUIREMENT = PEP508_PIN
+STRICT_THREE_PART_VERSION = re.compile(
+    r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$"
+)
 SEVERITY_ORDER = {
     "unknown": 0,
     "low": 1,
@@ -552,35 +555,108 @@ def cyclonedx(repo: str, commit: str, components: list[Component]) -> dict[str, 
     }
 
 
-def osv_query(components: list[Component]) -> list[dict[str, Any]]:
-    if not components:
-        return []
+def _osv_batch_request(queries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    payload = json.dumps({"queries": queries}).encode("utf-8")
+    request = urllib.request.Request(
+        "https://api.osv.dev/v1/querybatch",
+        data=payload,
+        method="POST",
+        headers={
+            "Content-Type": "application/json",
+            "User-Agent": "atlas-dep-audit/1.1",
+        },
+    )
+    with urllib.request.urlopen(request, timeout=90) as response:
+        data = json.load(response)
+    results = data.get("results") if isinstance(data, dict) else None
+    if not isinstance(results, list) or len(results) != len(queries):
+        raise RuntimeError("OSV querybatch response does not match the request shape")
+    if not all(isinstance(item, dict) for item in results):
+        raise RuntimeError("OSV querybatch returned a malformed result entry")
+    return results
+
+
+def _osv_full_record(vulnerability_id: str) -> dict[str, Any]:
+    request = urllib.request.Request(
+        "https://api.osv.dev/v1/vulns/"
+        + urllib.parse.quote(vulnerability_id, safe=""),
+        headers={"User-Agent": "atlas-dep-audit/1.1"},
+    )
+    with urllib.request.urlopen(request, timeout=30) as response:
+        record = json.load(response)
+    if not isinstance(record, dict) or record.get("id") != vulnerability_id:
+        raise RuntimeError(
+            f"OSV vulnerability detail response did not match {vulnerability_id}"
+        )
+    return record
+
+
+def _osv_shallow_results(components: list[Component]) -> list[dict[str, Any]]:
     all_results: list[dict[str, Any]] = []
     for offset in range(0, len(components), 500):
         batch = components[offset : offset + 500]
-        payload = json.dumps(
-            {
-                "queries": [
-                    {"package": {"purl": item.purl}}
-                    for item in batch
-                ]
-            }
-        ).encode("utf-8")
-        request = urllib.request.Request(
-            "https://api.osv.dev/v1/querybatch",
-            data=payload,
-            method="POST",
-            headers={
-                "Content-Type": "application/json",
-                "User-Agent": "atlas-dep-audit/1.0",
-            },
-        )
-        with urllib.request.urlopen(request, timeout=90) as response:
-            data = json.load(response)
-        all_results.extend(data.get("results", []))
+        base_queries = [{"package": {"purl": item.purl}} for item in batch]
+        first_page = _osv_batch_request(base_queries)
+        merged = [
+            {"vulns": list(item.get("vulns") or [])}
+            for item in first_page
+        ]
+        pending: list[tuple[int, dict[str, Any], str]] = []
+        seen_tokens: set[tuple[int, str]] = set()
+        for index, (query, result) in enumerate(zip(base_queries, first_page, strict=True)):
+            if not isinstance(result.get("vulns", []), list):
+                raise RuntimeError("OSV querybatch returned a malformed vuln collection")
+            token = result.get("next_page_token")
+            if token:
+                pending.append((index, query, str(token)))
+        while pending:
+            page_queries: list[dict[str, Any]] = []
+            page_meta: list[tuple[int, dict[str, Any], str]] = []
+            for index, query, token in pending:
+                marker = (index, token)
+                if marker in seen_tokens:
+                    raise RuntimeError("OSV querybatch repeated a pagination token")
+                seen_tokens.add(marker)
+                paged_query = dict(query)
+                paged_query["page_token"] = token
+                page_queries.append(paged_query)
+                page_meta.append((index, query, token))
+            page_results = _osv_batch_request(page_queries)
+            pending = []
+            for (index, query, _), result in zip(page_meta, page_results, strict=True):
+                vulns = result.get("vulns", [])
+                if not isinstance(vulns, list):
+                    raise RuntimeError("OSV querybatch returned a malformed vuln collection")
+                merged[index]["vulns"].extend(vulns)
+                token = result.get("next_page_token")
+                if token:
+                    pending.append((index, query, str(token)))
+        all_results.extend(merged)
         if offset + 500 < len(components):
             time.sleep(1)
     return all_results
+
+
+def osv_query(components: list[Component]) -> list[dict[str, Any]]:
+    """Query affected IDs in batches, then hydrate each ID to a full OSV record."""
+    if not components:
+        return []
+    shallow_results = _osv_shallow_results(components)
+    details: dict[str, dict[str, Any]] = {}
+    hydrated: list[dict[str, Any]] = []
+    for result in shallow_results:
+        full_records: list[dict[str, Any]] = []
+        for shallow in result.get("vulns", []):
+            if not isinstance(shallow, dict):
+                raise RuntimeError("OSV querybatch returned a malformed vulnerability")
+            vulnerability_id = str(shallow.get("id") or "")
+            if not vulnerability_id:
+                raise RuntimeError("OSV querybatch returned a vulnerability without an id")
+            if vulnerability_id not in details:
+                details[vulnerability_id] = _osv_full_record(vulnerability_id)
+            full_records.append(details[vulnerability_id])
+        hydrated.append({"vulns": full_records})
+    return hydrated
 
 
 def cvss_v3_score(vector: str) -> float | None:
@@ -668,14 +744,100 @@ def severity_of(vulnerability: dict[str, Any]) -> str:
     return "unknown"
 
 
-def fixed_version_of(vulnerability: dict[str, Any]) -> str | None:
-    fixed: list[str] = []
+def _strict_three_part_version(value: Any) -> tuple[int, int, int] | None:
+    match = STRICT_THREE_PART_VERSION.fullmatch(str(value or ""))
+    if match is None:
+        return None
+    return tuple(int(part) for part in match.groups())
+
+
+def _normalized_package_name(ecosystem: str, name: str) -> str:
+    value = name.lower()
+    if ecosystem.lower() == "pypi":
+        return re.sub(r"[-_.]+", "-", value)
+    return value
+
+
+def _affected_matches_component(affected: dict[str, Any], component: Component) -> bool:
+    package = affected.get("package")
+    if not isinstance(package, dict):
+        return False
+    ecosystem = str(package.get("ecosystem") or "")
+    name = str(package.get("name") or "")
+    if ecosystem.lower() != component.ecosystem.lower():
+        return False
+    return _normalized_package_name(ecosystem, name) == _normalized_package_name(
+        component.ecosystem,
+        component.name,
+    )
+
+
+def _range_fixed_for_version(
+    events: list[dict[str, Any]],
+    current: tuple[int, int, int],
+) -> str | None:
+    introduced: tuple[int, int, int] | None = None
+    for event in events:
+        if not isinstance(event, dict):
+            continue
+        if "introduced" in event:
+            value = str(event.get("introduced") or "")
+            introduced = (0, 0, 0) if value == "0" else _strict_three_part_version(value)
+            continue
+        if "fixed" in event and introduced is not None:
+            fixed_value = str(event.get("fixed") or "")
+            fixed = _strict_three_part_version(fixed_value)
+            if fixed is not None and introduced <= current < fixed:
+                return fixed_value
+            introduced = None
+            continue
+        if "last_affected" in event and introduced is not None:
+            last = _strict_three_part_version(event.get("last_affected"))
+            if last is not None and introduced <= current <= last:
+                return None
+            introduced = None
+    return None
+
+
+def fixed_version_of(
+    vulnerability: dict[str, Any],
+    component: Component | None = None,
+) -> str | None:
+    if component is None:
+        fixed: list[str] = []
+        for affected in vulnerability.get("affected", []):
+            if not isinstance(affected, dict):
+                continue
+            for range_item in affected.get("ranges", []):
+                if not isinstance(range_item, dict):
+                    continue
+                for event in range_item.get("events", []):
+                    if isinstance(event, dict) and event.get("fixed"):
+                        fixed.append(str(event["fixed"]))
+        return sorted(set(fixed))[0] if fixed else None
+
+    current = _strict_three_part_version(component.version)
+    if current is None:
+        return None
+    candidates: list[tuple[tuple[int, int, int], str]] = []
     for affected in vulnerability.get("affected", []):
+        if not isinstance(affected, dict) or not _affected_matches_component(affected, component):
+            continue
         for range_item in affected.get("ranges", []):
-            for event in range_item.get("events", []):
-                if event.get("fixed"):
-                    fixed.append(str(event["fixed"]))
-    return sorted(set(fixed))[0] if fixed else None
+            if not isinstance(range_item, dict):
+                continue
+            if str(range_item.get("type") or "").upper() not in {"SEMVER", "ECOSYSTEM"}:
+                continue
+            events = range_item.get("events", [])
+            if not isinstance(events, list):
+                continue
+            fixed_value = _range_fixed_for_version(events, current)
+            fixed = _strict_three_part_version(fixed_value)
+            if fixed is not None and fixed > current:
+                candidates.append((fixed, str(fixed_value)))
+    if not candidates:
+        return None
+    return min(candidates, key=lambda item: item[0])[1]
 
 
 def vulnerabilities_for(
@@ -693,7 +855,7 @@ def vulnerabilities_for(
                     version=component.version,
                     vulnerability_id=str(vulnerability.get("id") or "unknown"),
                     severity=severity_of(vulnerability),
-                    fixed_version=fixed_version_of(vulnerability),
+                    fixed_version=fixed_version_of(vulnerability, component),
                     source_file=component.source_file,
                 )
             )

@@ -119,7 +119,7 @@ class AuditTests(unittest.TestCase):
         with mock.patch("audit.urllib.request.urlopen", side_effect=fake_urlopen):
             results = audit.osv_query([component])
 
-        self.assertEqual([{}], results)
+        self.assertEqual([{"vulns": []}], results)
         self.assertEqual(90, captured["timeout"])
         self.assertEqual(
             {"queries": [{"package": {"purl": "pkg:npm/example@2.3.4"}}]},
