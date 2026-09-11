@@ -10,7 +10,7 @@ from pathlib import Path
 
 import gardener_candidates as legacy
 import gardener_findings as base
-import gardener_graph_candidates as graph
+import gardener_graph_minimal as graph
 
 
 def enhance_bundle(
