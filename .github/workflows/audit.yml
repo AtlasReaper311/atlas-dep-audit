@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 50
     env:
-      AUTHORITY_SHA: 11e7a727590aa5376e766416b1e6a83fb6fd98ef
+      AUTHORITY_SHA: 9ac88f38c2fa370d566421f0909db85b25a309ea
       ATLAS_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra
     steps:
       - name: Check out audit repository
@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
         with:
           repository: AtlasReaper311/atlas-infra
-          ref: 11e7a727590aa5376e766416b1e6a83fb6fd98ef
+          ref: 9ac88f38c2fa370d566421f0909db85b25a309ea
           path: .atlas-infra
           persist-credentials: false
 
@@ -45,8 +45,10 @@ jobs:
           python3 -m py_compile audit.py
           python3 -m py_compile private_repository_audit.py
           python3 -m py_compile contract_validation.py
+          python3 -m py_compile gardener_adr0016.py
           python3 -m py_compile gardener_candidates.py
           python3 -m py_compile gardener_findings.py
+          python3 -m py_compile gardener_graph_candidates.py
           python3 -m py_compile notify.py
           python3 -m py_compile secret_watch.py
           python3 -m py_compile validate_gardener_schedule.py
@@ -108,7 +110,7 @@ jobs:
         run: |
           set -euo pipefail
           test -s reports/report.json
-          python3 gardener_candidates.py \
+          python3 gardener_adr0016.py \
             --report reports/report.json \
             --work-dir work \
             --infra-root "$ATLAS_INFRA_ROOT" \
@@ -192,6 +194,8 @@ jobs:
               raise SystemExit("Gardener Finding bundle run identity mismatch")
           if document.get("source_commit") != "${{ github.sha }}":
               raise SystemExit("Gardener Finding bundle source commit mismatch")
+          if document.get("authority_commit") != "${{ env.AUTHORITY_SHA }}":
+              raise SystemExit("Gardener Finding bundle authority commit mismatch")
           if document.get("public_only") is not True:
               raise SystemExit("Gardener Finding bundle is not public-only")
           PY
