@@ -1,135 +1,15 @@
 {
   "authority_commit": "eb634e5b19725ecc87902543058a4dd2a2e089c7",
-  "bundle_digest": "sha256:af897b1a926f42e9d664f981ece63a33e346fa32e3cad55d41305a47a57b8f2f",
-  "expires_at": "2026-09-13T02:11:05Z",
+  "bundle_digest": "sha256:e6b37c4d210edacafa10dd411badd11f482151d3082b5052405234080e5304dd",
+  "expires_at": "2026-09-13T03:16:30Z",
   "findings": [
     {
       "category": "security",
-      "detected_at": "2026-09-11T14:11:05Z",
+      "detected_at": "2026-09-11T15:16:30Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34608521123"
-        ],
-        "summary": "2 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
-      },
-      "fingerprint": "sha256:53f18c43fff4faa19fce1a457b7f0684a78f2303af20d721325ec32aa91431ce",
-      "location": "package-lock.json",
-      "remediation": {
-        "candidate": {
-          "direct_updates": [],
-          "kind": "npm-lock-security-remediation",
-          "lockfile_file": "package-lock.json",
-          "manifest_file": "package.json",
-          "npm_version": "10.9.3",
-          "target_lockfile_sha256": "sha256:37cfd3766cd442070bcfb16a1d004c8aab5e0251419fdc3fe0e767c39efad9de",
-          "target_manifest_sha256": "sha256:4c079bac2aef9b22536986519951a31df25e30a1d996b917424124b41297caa1",
-          "transitive_updates": [
-            {
-              "current_version": "5.0.7",
-              "dependency": "brace-expansion",
-              "package_path": "node_modules/brace-expansion",
-              "parents": [
-                {
-                  "package_path": "node_modules/minimatch",
-                  "specifier": "^5.0.5"
-                }
-              ],
-              "target_version": "5.0.9",
-              "vulnerability_ids": [
-                "GHSA-mh99-v99m-4gvg",
-                "GHSA-rgw5-rvv9-x895"
-              ]
-            }
-          ],
-          "vulnerability_ids": [
-            "GHSA-mh99-v99m-4gvg",
-            "GHSA-rgw5-rvv9-x895"
-          ]
-        },
-        "disposition": "remediation-available",
-        "eligible": true,
-        "reason": "Deterministic ADR-0016 npm graph remediation is available."
-      },
-      "rule_id": "dependency-vulnerability",
-      "schema_version": "atlas-control-plane/finding/v1",
-      "severity": "failure",
-      "source": {
-        "check_id": "dependency-vulnerability",
-        "producer": "atlas-dep-audit",
-        "producer_version": "1.1.0"
-      },
-      "subject": {
-        "repository": "AtlasReaper311/atlas-dora"
-      }
-    },
-    {
-      "category": "security",
-      "detected_at": "2026-09-11T14:11:05Z",
-      "evidence": {
-        "redacted": true,
-        "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34608521123"
-        ],
-        "summary": "2 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
-      },
-      "fingerprint": "sha256:54b6d5262fed0d81d292fc95001144a8c17456f2a457dc49bded69f182486247",
-      "location": "package-lock.json",
-      "remediation": {
-        "candidate": {
-          "direct_updates": [],
-          "kind": "npm-lock-security-remediation",
-          "lockfile_file": "package-lock.json",
-          "manifest_file": "package.json",
-          "npm_version": "10.9.3",
-          "target_lockfile_sha256": "sha256:81fcbb483de7b7fc2d58f46261f96ddc1c79c9ce321fa03c0710aae64c4e049d",
-          "target_manifest_sha256": "sha256:e462782a177c916a9c58ba64e543394e15031eeb957b16eedfa4c1d20354568e",
-          "transitive_updates": [
-            {
-              "current_version": "5.0.7",
-              "dependency": "brace-expansion",
-              "package_path": "node_modules/brace-expansion",
-              "parents": [
-                {
-                  "package_path": "node_modules/minimatch",
-                  "specifier": "^5.0.5"
-                }
-              ],
-              "target_version": "5.0.9",
-              "vulnerability_ids": [
-                "GHSA-mh99-v99m-4gvg",
-                "GHSA-rgw5-rvv9-x895"
-              ]
-            }
-          ],
-          "vulnerability_ids": [
-            "GHSA-mh99-v99m-4gvg",
-            "GHSA-rgw5-rvv9-x895"
-          ]
-        },
-        "disposition": "remediation-available",
-        "eligible": true,
-        "reason": "Deterministic ADR-0016 npm graph remediation is available."
-      },
-      "rule_id": "dependency-vulnerability",
-      "schema_version": "atlas-control-plane/finding/v1",
-      "severity": "failure",
-      "source": {
-        "check_id": "dependency-vulnerability",
-        "producer": "atlas-dep-audit",
-        "producer_version": "1.1.0"
-      },
-      "subject": {
-        "repository": "AtlasReaper311/atlas-api-index"
-      }
-    },
-    {
-      "category": "security",
-      "detected_at": "2026-09-11T14:11:05Z",
-      "evidence": {
-        "redacted": true,
-        "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34608521123"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34602507343"
         ],
         "summary": "3 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
       },
@@ -154,11 +34,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-11T14:11:05Z",
+      "detected_at": "2026-09-11T15:16:30Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34608521123"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34602507343"
         ],
         "summary": "6 known vulnerability identifier(s) affect dependencies recorded in requirements.txt."
       },
@@ -183,11 +63,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-11T14:11:05Z",
+      "detected_at": "2026-09-11T15:16:30Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34608521123"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34602507343"
         ],
         "summary": "6 known vulnerability identifier(s) affect dependencies recorded in requirements.txt."
       },
@@ -212,131 +92,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-11T14:11:05Z",
+      "detected_at": "2026-09-11T15:16:30Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34608521123"
-        ],
-        "summary": "2 known vulnerability identifier(s) affect dependencies recorded in worker/package-lock.json."
-      },
-      "fingerprint": "sha256:d6770f1e91078978115dec6197104400af886e1974af82db7e0dd0d75a1aecd7",
-      "location": "worker/package-lock.json",
-      "remediation": {
-        "candidate": {
-          "direct_updates": [],
-          "kind": "npm-lock-security-remediation",
-          "lockfile_file": "worker/package-lock.json",
-          "manifest_file": "worker/package.json",
-          "npm_version": "10.9.3",
-          "target_lockfile_sha256": "sha256:6cfc01215e87440a7de5d8c3abe1145b93944c4331476245daeb1787e0cf8664",
-          "target_manifest_sha256": "sha256:1d339b000ea75e6fb6f0ba29651f8ffe42696f123140d0edc5e49b5b00cb529c",
-          "transitive_updates": [
-            {
-              "current_version": "5.0.7",
-              "dependency": "brace-expansion",
-              "package_path": "node_modules/brace-expansion",
-              "parents": [
-                {
-                  "package_path": "node_modules/minimatch",
-                  "specifier": "^5.0.5"
-                }
-              ],
-              "target_version": "5.0.9",
-              "vulnerability_ids": [
-                "GHSA-mh99-v99m-4gvg",
-                "GHSA-rgw5-rvv9-x895"
-              ]
-            }
-          ],
-          "vulnerability_ids": [
-            "GHSA-mh99-v99m-4gvg",
-            "GHSA-rgw5-rvv9-x895"
-          ]
-        },
-        "disposition": "remediation-available",
-        "eligible": true,
-        "reason": "Deterministic ADR-0016 npm graph remediation is available."
-      },
-      "rule_id": "dependency-vulnerability",
-      "schema_version": "atlas-control-plane/finding/v1",
-      "severity": "failure",
-      "source": {
-        "check_id": "dependency-vulnerability",
-        "producer": "atlas-dep-audit",
-        "producer_version": "1.1.0"
-      },
-      "subject": {
-        "repository": "AtlasReaper311/specular-telemetry"
-      }
-    },
-    {
-      "category": "security",
-      "detected_at": "2026-09-11T14:11:05Z",
-      "evidence": {
-        "redacted": true,
-        "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34608521123"
-        ],
-        "summary": "2 known vulnerability identifier(s) affect dependencies recorded in worker/package-lock.json."
-      },
-      "fingerprint": "sha256:e9df9c7b91ebf915b353ef13f70c3e5ab9af33e598c1d8eb666dd5eebd2a3446",
-      "location": "worker/package-lock.json",
-      "remediation": {
-        "candidate": {
-          "direct_updates": [],
-          "kind": "npm-lock-security-remediation",
-          "lockfile_file": "worker/package-lock.json",
-          "manifest_file": "worker/package.json",
-          "npm_version": "10.9.3",
-          "target_lockfile_sha256": "sha256:0893cdbdc09f0b9701ed6061ea3c7203f1fad1cb646348d6db77d0e081f58cb4",
-          "target_manifest_sha256": "sha256:d3dd4584b86e7394fe99666344956cfcaf9b935576530a9f077c2cdd4ce84924",
-          "transitive_updates": [
-            {
-              "current_version": "5.0.7",
-              "dependency": "brace-expansion",
-              "package_path": "node_modules/brace-expansion",
-              "parents": [
-                {
-                  "package_path": "node_modules/minimatch",
-                  "specifier": "^5.0.5"
-                }
-              ],
-              "target_version": "5.0.9",
-              "vulnerability_ids": [
-                "GHSA-mh99-v99m-4gvg",
-                "GHSA-rgw5-rvv9-x895"
-              ]
-            }
-          ],
-          "vulnerability_ids": [
-            "GHSA-mh99-v99m-4gvg",
-            "GHSA-rgw5-rvv9-x895"
-          ]
-        },
-        "disposition": "remediation-available",
-        "eligible": true,
-        "reason": "Deterministic ADR-0016 npm graph remediation is available."
-      },
-      "rule_id": "dependency-vulnerability",
-      "schema_version": "atlas-control-plane/finding/v1",
-      "severity": "failure",
-      "source": {
-        "check_id": "dependency-vulnerability",
-        "producer": "atlas-dep-audit",
-        "producer_version": "1.1.0"
-      },
-      "subject": {
-        "repository": "AtlasReaper311/ramone-voice-trigger"
-      }
-    },
-    {
-      "category": "security",
-      "detected_at": "2026-09-11T14:11:05Z",
-      "evidence": {
-        "redacted": true,
-        "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34608521123"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34602507343"
         ],
         "summary": "1 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
       },
@@ -358,76 +118,16 @@
       "subject": {
         "repository": "AtlasReaper311/atlas-notify"
       }
-    },
-    {
-      "category": "security",
-      "detected_at": "2026-09-11T14:11:05Z",
-      "evidence": {
-        "redacted": true,
-        "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34608521123"
-        ],
-        "summary": "2 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
-      },
-      "fingerprint": "sha256:f1e14dd3a8f02dbdaf057688f9d710e0a92cb0317a3129cd16d747ccbe7e5f6d",
-      "location": "package-lock.json",
-      "remediation": {
-        "candidate": {
-          "direct_updates": [],
-          "kind": "npm-lock-security-remediation",
-          "lockfile_file": "package-lock.json",
-          "manifest_file": "package.json",
-          "npm_version": "10.9.3",
-          "target_lockfile_sha256": "sha256:a16fa5424286f18d9fe38c3cbbfaceadee1fd78f106f02df31d59543337e72b3",
-          "target_manifest_sha256": "sha256:4c99cbbe846505e0cd162dce59a2e53503d087da2b9a1436216f51b73b0156dd",
-          "transitive_updates": [
-            {
-              "current_version": "5.0.7",
-              "dependency": "brace-expansion",
-              "package_path": "node_modules/brace-expansion",
-              "parents": [
-                {
-                  "package_path": "node_modules/minimatch",
-                  "specifier": "^5.0.5"
-                }
-              ],
-              "target_version": "5.0.9",
-              "vulnerability_ids": [
-                "GHSA-mh99-v99m-4gvg",
-                "GHSA-rgw5-rvv9-x895"
-              ]
-            }
-          ],
-          "vulnerability_ids": [
-            "GHSA-mh99-v99m-4gvg",
-            "GHSA-rgw5-rvv9-x895"
-          ]
-        },
-        "disposition": "remediation-available",
-        "eligible": true,
-        "reason": "Deterministic ADR-0016 npm graph remediation is available."
-      },
-      "rule_id": "dependency-vulnerability",
-      "schema_version": "atlas-control-plane/finding/v1",
-      "severity": "failure",
-      "source": {
-        "check_id": "dependency-vulnerability",
-        "producer": "atlas-dep-audit",
-        "producer_version": "1.1.0"
-      },
-      "subject": {
-        "repository": "AtlasReaper311/atlas-daily-digest"
-      }
     }
   ],
-  "generated_at": "2026-09-11T14:11:05Z",
+  "generated_at": "2026-09-11T15:16:30Z",
   "policy_digest": "sha256:484b33e502a63c1a94689f682e5a46d9f2b73432edc0b8dc5cce26b45d084fe6",
   "producer": "AtlasReaper311/atlas-dep-audit",
   "public_only": true,
   "repository_snapshots": [
     {
       "base_branch": "main",
-      "base_sha": "28d1ed82a81c421dcafc5e447763a6cc9640ce03",
+      "base_sha": "b290cd7c2f803343642373d1d89b6ddfae7212fb",
       "repository": "AtlasReaper311/atlas-api-index"
     },
     {
@@ -447,7 +147,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "445976215077025805cdbb0793b2a0d8d0d6d6ad",
+      "base_sha": "d9ac29928df94f717b549ee07c3656634c964d1b",
       "repository": "AtlasReaper311/atlas-daily-digest"
     },
     {
@@ -457,7 +157,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "884c4fbf436dac19de6ee191b5ee04b8be1bb70b",
+      "base_sha": "5f5b163fe2d7a10c24618f722a5c1c6949cf641d",
       "repository": "AtlasReaper311/atlas-dora"
     },
     {
@@ -472,7 +172,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "e6eea5234e9c9bb0ddd23c3fba0b9cb3a6dd382d",
+      "base_sha": "8a520e02880305e17521c43859b10389d307a9ba",
       "repository": "AtlasReaper311/atlas-systems"
     },
     {
@@ -497,7 +197,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "c6a8dbf830185d2d9736a545fb80a16990f5c238",
+      "base_sha": "7f99171ca894b110f2aa7a6261667fdea79588cf",
       "repository": "AtlasReaper311/ramone-voice-trigger"
     },
     {
@@ -517,7 +217,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "8e6878e390497058becbbdec1f8c61091304e0ef",
+      "base_sha": "a7198278712a9009a189811b9218c814541d3744",
       "repository": "AtlasReaper311/specular-telemetry"
     },
     {
@@ -528,8 +228,8 @@
   ],
   "schema_version": "atlas-control-plane/gardener-finding-bundle/v1",
   "source_commit": "269032064cf3ded1303f66b9eacb5fbd3a28f056",
-  "source_report_digest": "sha256:8bc1385589c0dd8fa33401ef7dd145d51758885c706c719b4aac4dc8b532bec5",
-  "source_run_attempt": 1,
-  "source_run_id": "34608521123",
+  "source_report_digest": "sha256:923c4327461d6e5e52e499e8201488d5c4236ef91a884647c1b732bbf5f062f9",
+  "source_run_attempt": 2,
+  "source_run_id": "34602507343",
   "source_workflow": ".github/workflows/audit.yml"
 }
