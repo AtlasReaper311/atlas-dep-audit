@@ -17,6 +17,9 @@ jobs:
     name: Generate public SBOMs and scan OSV
     runs-on: ubuntu-latest
     timeout-minutes: 50
+    outputs:
+      blocking: ${{ steps.audit_result.outputs.blocking }}
+      handoff_ready: ${{ steps.audit_result.outputs.handoff_ready }}
     env:
       AUTHORITY_SHA: 9ac88f38c2fa370d566421f0909db85b25a309ea
       ATLAS_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra
@@ -148,17 +151,30 @@ jobs:
             --secret-findings "${{ steps.audit.outputs.secret_findings || 0 }}" \
             --url "$RUN_URL"
 
-      - name: Preserve blocking result
-        if: steps.audit.outcome == 'failure' || steps.gardener_export.outcome == 'failure'
+      - name: Classify audit result
+        id: audit_result
+        if: always()
+        env:
+          AUDIT_OUTCOME: ${{ steps.audit.outcome }}
+          EXPORT_OUTCOME: ${{ steps.gardener_export.outcome }}
         run: |
           set -euo pipefail
-          echo "Supply-chain audit or Gardener Finding export failed closed."
-          exit 1
+          if [ "$EXPORT_OUTCOME" != "success" ]; then
+            printf 'handoff_ready=false\n' >> "$GITHUB_OUTPUT"
+            printf 'blocking=true\n' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          printf 'handoff_ready=true\n' >> "$GITHUB_OUTPUT"
+          if [ "$AUDIT_OUTCOME" = "failure" ]; then
+            printf 'blocking=true\n' >> "$GITHUB_OUTPUT"
+          else
+            printf 'blocking=false\n' >> "$GITHUB_OUTPUT"
+          fi
 
   publish-gardener-findings:
     name: Attest and publish Gardener Finding bundle
     needs: audit
-    if: needs.audit.result == 'success' && vars.ATLAS_GARDENER_HANDOFF_ENABLED == 'true'
+    if: needs.audit.result == 'success' && needs.audit.outputs.handoff_ready == 'true' && vars.ATLAS_GARDENER_HANDOFF_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -258,4 +274,34 @@ jobs:
               -f content="$CONTENT" \
               -f branch="$HANDOFF_BRANCH" \
               >/dev/null
+          fi
+
+  preserve-blocking-result:
+    name: Preserve audit blocking result
+    needs:
+      - audit
+      - publish-gardener-findings
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Preserve blocking result
+        env:
+          AUDIT_BLOCKING: ${{ needs.audit.outputs.blocking }}
+          HANDOFF_READY: ${{ needs.audit.outputs.handoff_ready }}
+          HANDOFF_ENABLED: ${{ vars.ATLAS_GARDENER_HANDOFF_ENABLED || 'false' }}
+          PUBLISH_RESULT: ${{ needs.publish-gardener-findings.result }}
+        run: |
+          set -euo pipefail
+          if [ "$HANDOFF_READY" != "true" ]; then
+            echo "Supply-chain audit or Gardener Finding export failed before a bounded handoff was ready."
+            exit 1
+          fi
+          if [ "$HANDOFF_ENABLED" = "true" ] && [ "$PUBLISH_RESULT" != "success" ]; then
+            echo "Gardener Finding handoff publication failed closed."
+            exit 1
+          fi
+          if [ "$AUDIT_BLOCKING" = "true" ]; then
+            echo "Supply-chain findings breached the configured audit failure threshold."
+            exit 1
           fi
