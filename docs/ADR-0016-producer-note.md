@@ -1,6 +1,6 @@
 # ADR-0016 producer implementation note
 
-This branch implements the producer side of accepted Atlas Infra authority `9ac88f38c2fa370d566421f0909db85b25a309ea`.
+This branch implements the producer side of accepted Atlas Infra authority `eb634e5b19725ecc87902543058a4dd2a2e089c7`.
 
 Atlas Dep Audit remains detection and public Finding-bundle producer. It may emit the ADR-0016 `npm-lock-security-remediation` candidate only when the exact audited lockfile-v3 graph can be regenerated with npm `10.9.3`, lifecycle scripts disabled, the accepted direct/transitive operation boundary, exact target manifest/lock digests, and a post-regeneration OSV proof that the candidate vulnerability identifiers are absent.
 

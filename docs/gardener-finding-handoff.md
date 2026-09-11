@@ -6,7 +6,7 @@ Merging this source does not publish a bundle. The publication job requires the 
 
 ## Authority
 
-Candidate production is bound to accepted Atlas Infra authority `9ac88f38c2fa370d566421f0909db85b25a309ea` and ADR-0016. Audit text remains evidence only. A candidate is structured bounded evidence that Gardener must independently validate and regenerate against the exact repository snapshot.
+Candidate production is bound to accepted Atlas Infra authority `eb634e5b19725ecc87902543058a4dd2a2e089c7` and ADR-0016. Audit text remains evidence only. A candidate is structured bounded evidence that Gardener must independently validate and regenerate against the exact repository snapshot.
 
 ## Bundle contents
 

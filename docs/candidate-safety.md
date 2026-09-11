@@ -12,5 +12,5 @@ Candidate production is evidence generation, not target mutation.
 - The producer records exact target manifest and lock SHA-256 digests and emits `remediation-available` only after a post-regeneration OSV query proves all candidate vulnerability identifiers absent.
 - No released non-affected target becomes `awaiting-upstream-fix`; major-only or otherwise non-deterministic remediations become `manual-remediation-required`; unsupported source/graph forms become `unsupported-remediation`.
 - Container candidates retain the accepted simple Docker Hub tag boundary and bind the resolved immutable `sha256` digest into the Finding. Named build stages remain outside the automatic container rewrite boundary.
-- All generated Findings are validated against accepted Atlas Infra authority `9ac88f38c2fa370d566421f0909db85b25a309ea` before the bundle digest is recomputed.
+- All generated Findings are validated against accepted Atlas Infra authority `eb634e5b19725ecc87902543058a4dd2a2e089c7` before the bundle digest is recomputed.
 - No candidate field is treated as a shell command by this producer.
