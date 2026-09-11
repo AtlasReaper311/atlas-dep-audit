@@ -1,6 +1,6 @@
 # Candidate implementation validation
 
-Repository-native validation for the ADR-0016 producer change is the existing pull-request CI bound to accepted Atlas Infra authority `9ac88f38c2fa370d566421f0909db85b25a309ea`.
+Repository-native validation for the ADR-0016 producer change is the existing pull-request CI bound to accepted Atlas Infra authority `eb634e5b19725ecc87902543058a4dd2a2e089c7`.
 
 The branch must pass immutable-authority validation, Gardener schedule validation, self-tooling pin validation, Python compilation, the full offline unit-test suite, documentation drift self-test, canonical contract validation, and `git diff --check` before merge review.
 
