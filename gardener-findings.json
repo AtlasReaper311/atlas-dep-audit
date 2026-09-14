@@ -1,15 +1,15 @@
 {
   "authority_commit": "eb634e5b19725ecc87902543058a4dd2a2e089c7",
-  "bundle_digest": "sha256:e6b37c4d210edacafa10dd411badd11f482151d3082b5052405234080e5304dd",
-  "expires_at": "2026-09-13T03:16:30Z",
+  "bundle_digest": "sha256:5d0474ccde8f3d0f8475d22e01995dad3464daa172898c4cf694d420c6b9aa40",
+  "expires_at": "2026-09-16T03:14:01Z",
   "findings": [
     {
       "category": "security",
-      "detected_at": "2026-09-11T15:16:30Z",
+      "detected_at": "2026-09-14T15:14:01Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34602507343"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34860683787"
         ],
         "summary": "3 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
       },
@@ -34,11 +34,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-11T15:16:30Z",
+      "detected_at": "2026-09-14T15:14:01Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34602507343"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34860683787"
         ],
         "summary": "6 known vulnerability identifier(s) affect dependencies recorded in requirements.txt."
       },
@@ -63,11 +63,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-11T15:16:30Z",
+      "detected_at": "2026-09-14T15:14:01Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34602507343"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34860683787"
         ],
         "summary": "6 known vulnerability identifier(s) affect dependencies recorded in requirements.txt."
       },
@@ -92,11 +92,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-11T15:16:30Z",
+      "detected_at": "2026-09-14T15:14:01Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34602507343"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34860683787"
         ],
         "summary": "1 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
       },
@@ -120,7 +120,7 @@
       }
     }
   ],
-  "generated_at": "2026-09-11T15:16:30Z",
+  "generated_at": "2026-09-14T15:14:01Z",
   "policy_digest": "sha256:484b33e502a63c1a94689f682e5a46d9f2b73432edc0b8dc5cce26b45d084fe6",
   "producer": "AtlasReaper311/atlas-dep-audit",
   "public_only": true,
@@ -132,7 +132,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "8ff638f92cfc3a3ec5e2243ecb6464c964bd8e65",
+      "base_sha": "daf91a2bd79ad0e57f004c07849c1cb17ee9178e",
       "repository": "AtlasReaper311/atlas-api-public"
     },
     {
@@ -152,7 +152,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "478d705b129f4a28d46d0d96eef1d1c8e4aa8ed0",
+      "base_sha": "b6da47eb377fb71f72a65af18d89b671a9183f22",
       "repository": "AtlasReaper311/atlas-doc-viewer"
     },
     {
@@ -172,7 +172,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "8a520e02880305e17521c43859b10389d307a9ba",
+      "base_sha": "fc67533740a78065aa2cbf30c9659c4a58afd0a5",
       "repository": "AtlasReaper311/atlas-systems"
     },
     {
@@ -228,8 +228,8 @@
   ],
   "schema_version": "atlas-control-plane/gardener-finding-bundle/v1",
   "source_commit": "269032064cf3ded1303f66b9eacb5fbd3a28f056",
-  "source_report_digest": "sha256:923c4327461d6e5e52e499e8201488d5c4236ef91a884647c1b732bbf5f062f9",
-  "source_run_attempt": 2,
-  "source_run_id": "34602507343",
+  "source_report_digest": "sha256:55a8ef9d0fed4a1078fc59f58ba29522058462534b524a03dd7025b42a80290b",
+  "source_run_attempt": 1,
+  "source_run_id": "34860683787",
   "source_workflow": ".github/workflows/audit.yml"
 }
