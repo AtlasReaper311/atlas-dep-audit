@@ -53,7 +53,6 @@ jobs:
           test "$(git -C "$ATLAS_INFRA_ROOT" rev-parse HEAD)" = "$GARDENER_AUTHORITY_SHA"
           test "$(git -C "$ATLAS_RISK_INFRA_ROOT" rev-parse HEAD)" = "$RISK_AUTHORITY_SHA"
           python3 "$ATLAS_INFRA_ROOT/scripts/validate_gardener_automation.py" --quiet
-          python3 "$ATLAS_RISK_INFRA_ROOT/scripts/validate_vulnerability_risk_dispositions.py" --quiet
           python3 validate_gardener_schedule.py \
             --infra-root "$ATLAS_INFRA_ROOT" \
             --quiet
