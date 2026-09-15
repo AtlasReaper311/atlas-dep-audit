@@ -423,11 +423,18 @@ def parse_container_bases(
     ]
     for path in sorted(dockerfiles):
         relative = str(path.relative_to(repo_root))
+        stage_aliases: set[str] = set()
         for raw in path.read_text(encoding="utf-8", errors="replace").splitlines():
             line = raw.strip()
             if not line.upper().startswith("FROM "):
                 continue
-            reference = line.split()[1]
+            tokens = line.split()
+            reference = tokens[1]
+            internal_stage = reference in stage_aliases
+            if len(tokens) >= 4 and tokens[2].upper() == "AS":
+                stage_aliases.add(tokens[3])
+            if internal_stage:
+                continue
             pinned = "@sha256:" in reference
             bases.append(
                 {

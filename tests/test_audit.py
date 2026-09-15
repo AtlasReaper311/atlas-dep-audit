@@ -91,6 +91,30 @@ class AuditTests(unittest.TestCase):
             self.assertEqual(2, len(actions))
             self.assertEqual(1, len(findings))
 
+    def test_container_bases_ignore_internal_stage_aliases(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "Dockerfile").write_text(
+                "FROM python:3.14-slim AS base\n"
+                "FROM base AS dev\n"
+                "FROM base AS prod\n",
+                encoding="utf-8",
+            )
+            bases, findings = audit.parse_container_bases(root, "owner/repo")
+            self.assertEqual(
+                [
+                    {
+                        "path": "Dockerfile",
+                        "reference": "python:3.14-slim",
+                        "digest_pinned": "false",
+                    }
+                ],
+                bases,
+            )
+            self.assertEqual(1, len(findings))
+            self.assertEqual("container-digest", findings[0].rule)
+            self.assertIn("python:3.14-slim", findings[0].message)
+
     def test_osv_query_uses_versioned_purl_without_duplicate_version(self):
         component = audit.Component(
             ecosystem="npm",
