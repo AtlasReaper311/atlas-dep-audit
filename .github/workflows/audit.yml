@@ -23,7 +23,7 @@ jobs:
     env:
       GARDENER_AUTHORITY_SHA: eb634e5b19725ecc87902543058a4dd2a2e089c7
       ATLAS_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra
-      RISK_AUTHORITY_SHA: cb7012668029e21ee8776a7740ffca2ccf1df135
+      RISK_AUTHORITY_SHA: 32662e26b6fb0550d6fed96434ecbd6713f09668
       ATLAS_RISK_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra-risk
     steps:
       - name: Check out audit repository
@@ -43,7 +43,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
         with:
           repository: AtlasReaper311/atlas-infra
-          ref: cb7012668029e21ee8776a7740ffca2ccf1df135
+          ref: 32662e26b6fb0550d6fed96434ecbd6713f09668
           path: .atlas-infra-risk
           persist-credentials: false
 
