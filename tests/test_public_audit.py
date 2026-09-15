@@ -18,6 +18,10 @@ class PublicAuditAdapterTests(TestCase):
         with mock.patch("public_audit.audit.main", return_value=2):
             self.assertEqual(2, public_audit.main())
 
+    def test_missing_return_code_fails_closed(self) -> None:
+        with mock.patch("public_audit.audit.main", return_value=None):
+            self.assertEqual(2, public_audit.main())
+
     def test_operational_exception_is_not_hidden(self) -> None:
         with mock.patch(
             "public_audit.audit.main",
