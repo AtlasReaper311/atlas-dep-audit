@@ -5,7 +5,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = REPO_ROOT / ".github" / "workflows" / "audit.yml"
-RISK_AUTHORITY_SHA = "cb7012668029e21ee8776a7740ffca2ccf1df135"
+RISK_AUTHORITY_SHA = "32662e26b6fb0550d6fed96434ecbd6713f09668"
 GARDENER_AUTHORITY_SHA = "eb634e5b19725ecc87902543058a4dd2a2e089c7"
 
 
