@@ -1,44 +1,15 @@
 {
   "authority_commit": "eb634e5b19725ecc87902543058a4dd2a2e089c7",
-  "bundle_digest": "sha256:724699ea641b8193a39738da2d80ae3e096dc815be4bd770fbe1c6c1eb2a9b32",
-  "expires_at": "2026-09-16T18:05:21Z",
+  "bundle_digest": "sha256:395d8e2936bdc88de93f2b79440ec21ef0b1bbca80e7233da4ef79b0357ecd74",
+  "expires_at": "2026-09-16T21:08:31Z",
   "findings": [
     {
       "category": "security",
-      "detected_at": "2026-09-15T06:05:21Z",
+      "detected_at": "2026-09-15T09:08:31Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34935344303"
-        ],
-        "summary": "3 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
-      },
-      "fingerprint": "sha256:772d705d601703efa59abbfbadf0f08cfd0eeadbd290e8c61c35e640fce8d7ef",
-      "location": "package-lock.json",
-      "remediation": {
-        "disposition": "unsupported-remediation",
-        "eligible": false,
-        "reason": "post-regeneration vulnerability proof still reports: GHSA-rgj7-g3m4-5g8c"
-      },
-      "rule_id": "dependency-vulnerability",
-      "schema_version": "atlas-control-plane/finding/v1",
-      "severity": "failure",
-      "source": {
-        "check_id": "dependency-vulnerability",
-        "producer": "atlas-dep-audit",
-        "producer_version": "1.1.0"
-      },
-      "subject": {
-        "repository": "AtlasReaper311/ramone-edge"
-      }
-    },
-    {
-      "category": "security",
-      "detected_at": "2026-09-15T06:05:21Z",
-      "evidence": {
-        "redacted": true,
-        "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34935344303"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34950752337"
         ],
         "summary": "6 known vulnerability identifier(s) affect dependencies recorded in requirements.txt."
       },
@@ -63,11 +34,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-15T06:05:21Z",
+      "detected_at": "2026-09-15T09:08:31Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34935344303"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34950752337"
         ],
         "summary": "6 known vulnerability identifier(s) affect dependencies recorded in requirements.txt."
       },
@@ -89,38 +60,9 @@
       "subject": {
         "repository": "AtlasReaper311/ramone-memory"
       }
-    },
-    {
-      "category": "security",
-      "detected_at": "2026-09-15T06:05:21Z",
-      "evidence": {
-        "redacted": true,
-        "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34935344303"
-        ],
-        "summary": "1 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
-      },
-      "fingerprint": "sha256:ef4c5837d4d5465e7ccef47c4e3d4632e3af0dc6182e6982ae232919e5466f2a",
-      "location": "package-lock.json",
-      "remediation": {
-        "disposition": "unsupported-remediation",
-        "eligible": false,
-        "reason": "post-regeneration vulnerability proof still reports: GHSA-rgj7-g3m4-5g8c"
-      },
-      "rule_id": "dependency-vulnerability",
-      "schema_version": "atlas-control-plane/finding/v1",
-      "severity": "failure",
-      "source": {
-        "check_id": "dependency-vulnerability",
-        "producer": "atlas-dep-audit",
-        "producer_version": "1.1.0"
-      },
-      "subject": {
-        "repository": "AtlasReaper311/atlas-notify"
-      }
     }
   ],
-  "generated_at": "2026-09-15T06:05:21Z",
+  "generated_at": "2026-09-15T09:08:31Z",
   "policy_digest": "sha256:484b33e502a63c1a94689f682e5a46d9f2b73432edc0b8dc5cce26b45d084fe6",
   "producer": "AtlasReaper311/atlas-dep-audit",
   "public_only": true,
@@ -162,7 +104,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "b1c0f3de1d591ed7f317e9f1626f7fdee93ad314",
+      "base_sha": "b8b392e4c3b33c351ad532949fe2eb00b378cf95",
       "repository": "AtlasReaper311/atlas-notify"
     },
     {
@@ -172,7 +114,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "fc67533740a78065aa2cbf30c9659c4a58afd0a5",
+      "base_sha": "1d912f68d5908ee8c752d4bde582a0b99dc41f59",
       "repository": "AtlasReaper311/atlas-systems"
     },
     {
@@ -187,7 +129,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "bcbd0b7bb715839832ae8a30814e02d6674bc836",
+      "base_sha": "b5896e14036c7073e5d1a02d8e0b3cfc57f29da2",
       "repository": "AtlasReaper311/ramone-edge"
     },
     {
@@ -227,9 +169,9 @@
     }
   ],
   "schema_version": "atlas-control-plane/gardener-finding-bundle/v1",
-  "source_commit": "3b7865dbde345a953ab98b9198de9992486740e8",
-  "source_report_digest": "sha256:5ac097c6fb41dcf30680efe42f21633c42df6d65237a0b94310976a73c3a28ac",
+  "source_commit": "538b273c48d6f8e58d5049c1a03225d62ee875c9",
+  "source_report_digest": "sha256:259c4ab32288482ebced32fe8fd5985f5c1eb748e60a254caf973b8002f697f0",
   "source_run_attempt": 1,
-  "source_run_id": "34935344303",
+  "source_run_id": "34950752337",
   "source_workflow": ".github/workflows/audit.yml"
 }
