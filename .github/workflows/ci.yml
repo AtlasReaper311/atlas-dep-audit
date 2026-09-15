@@ -16,15 +16,17 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      AUTHORITY_SHA: eb634e5b19725ecc87902543058a4dd2a2e089c7
+      GARDENER_AUTHORITY_SHA: eb634e5b19725ecc87902543058a4dd2a2e089c7
       ATLAS_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra
+      RISK_AUTHORITY_SHA: cb7012668029e21ee8776a7740ffca2ccf1df135
+      ATLAS_RISK_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra-risk
     steps:
       - name: Check out repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
         with:
           fetch-depth: 0
 
-      - name: Check out reviewed canonical authority
+      - name: Check out reviewed canonical Gardener authority
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
         with:
           repository: AtlasReaper311/atlas-infra
@@ -32,11 +34,21 @@ jobs:
           path: .atlas-infra
           persist-credentials: false
 
+      - name: Check out reviewed vulnerability risk authority
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
+        with:
+          repository: AtlasReaper311/atlas-infra
+          ref: cb7012668029e21ee8776a7740ffca2ccf1df135
+          path: .atlas-infra-risk
+          persist-credentials: false
+
       - name: Verify immutable authority
         run: |
           set -euo pipefail
-          test "$(git -C "$ATLAS_INFRA_ROOT" rev-parse HEAD)" = "$AUTHORITY_SHA"
+          test "$(git -C "$ATLAS_INFRA_ROOT" rev-parse HEAD)" = "$GARDENER_AUTHORITY_SHA"
+          test "$(git -C "$ATLAS_RISK_INFRA_ROOT" rev-parse HEAD)" = "$RISK_AUTHORITY_SHA"
           python3 "$ATLAS_INFRA_ROOT/scripts/validate_gardener_automation.py" --quiet
+          python3 "$ATLAS_RISK_INFRA_ROOT/scripts/validate_vulnerability_risk_dispositions.py" --quiet
           python3 validate_gardener_schedule.py \
             --infra-root "$ATLAS_INFRA_ROOT" \
             --quiet
@@ -61,8 +73,10 @@ jobs:
             gardener_graph_candidates.py \
             notify.py \
             notify_client.py \
+            public_audit.py \
             secret_watch.py \
             validate_gardener_schedule.py \
+            vulnerability_risk_gate.py \
             workflow_pin_validation.py
           python3 -m unittest discover -s tests -v > /tmp/atlas-dep-audit-tests.log 2>&1
           python3 doc_drift.py --selftest

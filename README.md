@@ -28,9 +28,14 @@ The weekly public workflow reads `atlas-api-public/data/public-repositories.json
 - GitHub Action pin checks.
 - container base reference checks.
 - public secret-policy assurance.
+- bounded ADR-0018 vulnerability risk evaluation.
 - one consolidated public-estate report.
 
 The public audit never discovers private repositories through an account-wide token. Its scan manifest is built from the generated public repository inventory.
+
+Raw vulnerability detection and blocking policy are separate. `audit.py` produces the complete vulnerability evidence first. `vulnerability_risk_gate.py` then validates a separately pinned `atlas-infra` ADR-0018 authority, verifies exact repository/package/version/advisory/severity matches and exact source-evidence Git blobs, and calculates the final public-workflow blocking result. An accepted risk remains in every vulnerability report at its original severity.
+
+The Gardener Finding handoff remains bound to its existing accepted ADR-0016 authority revision. The scheduled workflow uses an independent immutable ADR-0018 authority checkout for risk policy so a risk-policy update cannot silently change Gardener controller authority.
 
 ## Private repository assurance
 
@@ -54,7 +59,7 @@ The source-local private audit includes:
 - container base reference checks.
 - build provenance.
 
-Private repository governance is validated separately through the reusable workflow owned by `atlas-infra`. Native repository CI, Dependabot, and GitHub security controls remain source-owned.
+Private repository governance is validated separately through the reusable workflow owned by `atlas-infra`. Native repository CI, Dependabot, and GitHub security controls remain source-owned. ADR-0018 public risk evaluation is not implicitly applied to private caller workflows.
 
 ## Outputs
 
@@ -68,6 +73,8 @@ For each workflow scope:
 - `reports/summary.md`: human-readable findings.
 - `reports/report.json`: machine-readable findings.
 
+For the scheduled public workflow, `reports/report.json` also contains `vulnerability_risk`, which records the immutable risk authority commit, canonical risk-policy digest, original severity totals, accepted-risk totals, undispositioned totals, threshold-blocking totals, accepted findings, rejected disposition matches, and the final blocking decision. The original `vulnerabilities` collection is not rewritten or filtered.
+
 Public workflow artifacts contain public repositories only. Private workflow artifacts remain attached to the authenticated private caller.
 
 ## Vulnerability source
@@ -76,11 +83,17 @@ The audit uses [OSV](https://osv.dev), an open vulnerability schema and public q
 
 Critical vulnerabilities fail the audit by default. Lower severities remain visible unless policy raises the threshold. Operational failures also fail rather than producing an incomplete green report.
 
+Under accepted Atlas Infra ADR-0018 authority, the scheduled public workflow may exclude one exact, current, source-bound `accepted-risk` finding from the blocking threshold. The finding remains critical and visible. A new advisory, dependency change, severity change, source-evidence drift, expired policy, malformed policy, unavailable evidence, or newly published fixed version fails closed and keeps the finding blocking.
+
+Risk disposition is independent from ADR-0016 remediation disposition. `awaiting-upstream-fix` still means no released remediation target exists; `accepted-risk` only describes the temporary blocking decision.
+
 ## Scope boundary
 
 This is a source SBOM. It inventories dependencies committed in supported npm and Python dependency files, Action refs, and container base references. It does not claim to inventory operating-system packages inside an image that was not built during the run.
 
 Repository visibility controls where evidence is retained, not whether the repository receives assurance.
+
+Source-evidence binding proves only that the reviewed repository source files have not changed. It does not prove deployment, provider, network, host, authentication, container, or live runtime state.
 
 ## Local use
 
@@ -92,6 +105,21 @@ python3 audit.py \
   --policy policy.json \
   --skip-osv
 ```
+
+To reproduce the scheduled public risk decision after a real report and SBOM set have been generated, check out the exact accepted ADR-0018 `atlas-infra` authority and run:
+
+```bash
+python3 vulnerability_risk_gate.py \
+  --report reports/report.json \
+  --summary reports/summary.md \
+  --audit-policy policy.json \
+  --work-dir work \
+  --sbom-dir sbom \
+  --infra-root ../atlas-infra \
+  --authority-sha <accepted-ADR-0018-authority-SHA>
+```
+
+The authority argument must be the exact commit checked out at `--infra-root`. The gate refuses branch names, short SHAs, authority drift, invalid or expired policy, and incomplete source evidence.
 
 Single checked-out repository audit:
 

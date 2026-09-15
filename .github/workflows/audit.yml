@@ -21,8 +21,10 @@ jobs:
       blocking: ${{ steps.audit_result.outputs.blocking }}
       handoff_ready: ${{ steps.audit_result.outputs.handoff_ready }}
     env:
-      AUTHORITY_SHA: eb634e5b19725ecc87902543058a4dd2a2e089c7
+      GARDENER_AUTHORITY_SHA: eb634e5b19725ecc87902543058a4dd2a2e089c7
       ATLAS_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra
+      RISK_AUTHORITY_SHA: cb7012668029e21ee8776a7740ffca2ccf1df135
+      ATLAS_RISK_INFRA_ROOT: ${{ github.workspace }}/.atlas-infra-risk
     steps:
       - name: Check out audit repository
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
@@ -37,16 +39,26 @@ jobs:
           path: .atlas-infra
           persist-credentials: false
 
+      - name: Check out reviewed vulnerability risk authority
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0, Node 24
+        with:
+          repository: AtlasReaper311/atlas-infra
+          ref: cb7012668029e21ee8776a7740ffca2ccf1df135
+          path: .atlas-infra-risk
+          persist-credentials: false
+
       - name: Validate source and immutable authority
         run: |
           set -euo pipefail
-          test "$(git -C "$ATLAS_INFRA_ROOT" rev-parse HEAD)" = "$AUTHORITY_SHA"
+          test "$(git -C "$ATLAS_INFRA_ROOT" rev-parse HEAD)" = "$GARDENER_AUTHORITY_SHA"
+          test "$(git -C "$ATLAS_RISK_INFRA_ROOT" rev-parse HEAD)" = "$RISK_AUTHORITY_SHA"
           python3 "$ATLAS_INFRA_ROOT/scripts/validate_gardener_automation.py" --quiet
           python3 validate_gardener_schedule.py \
             --infra-root "$ATLAS_INFRA_ROOT" \
             --quiet
           python3 -m py_compile audit.py
           python3 -m py_compile private_repository_audit.py
+          python3 -m py_compile public_audit.py
           python3 -m py_compile contract_validation.py
           python3 -m py_compile gardener_adr0016.py
           python3 -m py_compile gardener_candidates.py
@@ -55,6 +67,7 @@ jobs:
           python3 -m py_compile notify.py
           python3 -m py_compile secret_watch.py
           python3 -m py_compile validate_gardener_schedule.py
+          python3 -m py_compile vulnerability_risk_gate.py
           python3 -m unittest discover -s tests -v
 
       - name: Build public repository scan manifest
@@ -94,7 +107,7 @@ jobs:
           SECRET_WATCH_GITHUB_TOKEN: ${{ secrets.SECRET_WATCH_GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          python3 audit.py \
+          python3 public_audit.py \
             --manifest public-scan-manifest.json \
             --policy policy.json \
             --work-dir work \
@@ -102,6 +115,22 @@ jobs:
             --sbom-dir sbom \
             --provenance-dir provenance \
             --secret-watch-live
+          test -s reports/report.json
+
+      - name: Evaluate bounded vulnerability risk dispositions
+        id: risk_gate
+        if: always() && steps.audit.outcome == 'success' && hashFiles('reports/report.json') != ''
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          python3 vulnerability_risk_gate.py \
+            --report reports/report.json \
+            --summary reports/summary.md \
+            --audit-policy policy.json \
+            --work-dir work \
+            --sbom-dir sbom \
+            --infra-root "$ATLAS_RISK_INFRA_ROOT" \
+            --authority-sha "$RISK_AUTHORITY_SHA"
           cat reports/summary.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Export canonical public Gardener Finding bundle
@@ -156,16 +185,22 @@ jobs:
         if: always()
         env:
           AUDIT_OUTCOME: ${{ steps.audit.outcome }}
+          RISK_OUTCOME: ${{ steps.risk_gate.outcome }}
+          RISK_BLOCKING: ${{ steps.risk_gate.outputs.blocking }}
           EXPORT_OUTCOME: ${{ steps.gardener_export.outcome }}
         run: |
           set -euo pipefail
-          if [ "$EXPORT_OUTCOME" != "success" ]; then
+          if [ "$AUDIT_OUTCOME" != "success" ] || [ "$EXPORT_OUTCOME" != "success" ]; then
             printf 'handoff_ready=false\n' >> "$GITHUB_OUTPUT"
             printf 'blocking=true\n' >> "$GITHUB_OUTPUT"
             exit 0
           fi
           printf 'handoff_ready=true\n' >> "$GITHUB_OUTPUT"
-          if [ "$AUDIT_OUTCOME" = "failure" ]; then
+          if [ "$RISK_OUTCOME" != "success" ]; then
+            printf 'blocking=true\n' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "$RISK_BLOCKING" = "true" ]; then
             printf 'blocking=true\n' >> "$GITHUB_OUTPUT"
           else
             printf 'blocking=false\n' >> "$GITHUB_OUTPUT"
@@ -178,7 +213,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      AUTHORITY_SHA: eb634e5b19725ecc87902543058a4dd2a2e089c7
+      GARDENER_AUTHORITY_SHA: eb634e5b19725ecc87902543058a4dd2a2e089c7
     permissions:
       contents: write
       id-token: write
@@ -212,7 +247,7 @@ jobs:
               raise SystemExit("Gardener Finding bundle run identity mismatch")
           if document.get("source_commit") != "${{ github.sha }}":
               raise SystemExit("Gardener Finding bundle source commit mismatch")
-          if document.get("authority_commit") != "${{ env.AUTHORITY_SHA }}":
+          if document.get("authority_commit") != "${{ env.GARDENER_AUTHORITY_SHA }}":
               raise SystemExit("Gardener Finding bundle authority commit mismatch")
           if document.get("public_only") is not True:
               raise SystemExit("Gardener Finding bundle is not public-only")
@@ -302,6 +337,6 @@ jobs:
             exit 1
           fi
           if [ "$AUDIT_BLOCKING" = "true" ]; then
-            echo "Supply-chain findings breached the configured audit failure threshold."
+            echo "Supply-chain findings breached the configured audit failure threshold after bounded risk disposition evaluation."
             exit 1
           fi
