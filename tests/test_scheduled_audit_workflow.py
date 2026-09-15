@@ -38,11 +38,12 @@ class ScheduledAuditWorkflowTests(unittest.TestCase):
         self.assertIn(f"ref: {RISK_AUTHORITY_SHA}", risk)
         self.assertIn("path: .atlas-infra-risk", risk)
 
-    def test_raw_audit_exit_is_deferred_only_after_report_exists(self) -> None:
+    def test_public_audit_adapter_defers_report_blocking_without_shell_masking(self) -> None:
         block = step_block(self.text, "Audit public estate repositories")
-        self.assertIn("RAW_AUDIT_EXIT=$?", block)
+        self.assertIn("python3 public_audit.py", block)
         self.assertIn("test -s reports/report.json", block)
-        self.assertIn("raw_exit=%s", block)
+        self.assertNotIn("set +e", block)
+        self.assertNotIn("RAW_AUDIT_EXIT", block)
 
     def test_risk_gate_uses_completed_report_and_pinned_authority(self) -> None:
         block = step_block(
