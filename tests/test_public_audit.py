@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-import unittest
-from unittest import mock
+from unittest import TestCase, main, mock
 
 import public_audit
 
 
-class PublicAuditAdapterTests(unittest.TestCase):
+class PublicAuditAdapterTests(TestCase):
     def test_clear_report_remains_success(self) -> None:
         with mock.patch("public_audit.audit.main", return_value=0):
             self.assertEqual(0, public_audit.main())
@@ -29,4 +28,4 @@ class PublicAuditAdapterTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    main()
