@@ -4,9 +4,9 @@
 `audit.main()` returns 1 when generated evidence contains a configured blocking
 finding. The scheduled public workflow must still generate that evidence before
 the separate risk gate can decide whether an exact finding is accepted risk.
-This adapter converts only that normal report result from 1 to 0. Uncaught
-exceptions still fail normally, and any future unexpected non-zero return code
-is preserved rather than silently treated as a finding result.
+This adapter converts only the current normal report results 0 and 1 to process
+success. Uncaught exceptions, unexpected non-zero codes, and unexpected return
+types remain failures.
 """
 
 from __future__ import annotations
@@ -16,9 +16,11 @@ import audit
 
 def main() -> int:
     result = audit.main()
-    if result == 1:
+    if result in {0, 1}:
         return 0
-    return result
+    if isinstance(result, int) and not isinstance(result, bool):
+        return result
+    return 2
 
 
 if __name__ == "__main__":
