@@ -73,6 +73,7 @@ jobs:
             gardener_graph_candidates.py \
             notify.py \
             notify_client.py \
+            public_audit.py \
             secret_watch.py \
             validate_gardener_schedule.py \
             vulnerability_risk_gate.py \
