@@ -1,15 +1,15 @@
 {
   "authority_commit": "eb634e5b19725ecc87902543058a4dd2a2e089c7",
-  "bundle_digest": "sha256:395d8e2936bdc88de93f2b79440ec21ef0b1bbca80e7233da4ef79b0357ecd74",
-  "expires_at": "2026-09-16T21:08:31Z",
+  "bundle_digest": "sha256:6ae3ffd4a275b1d4cf6e2261535f1e0b29e09bda6f36528a6caf4545f11834a0",
+  "expires_at": "2026-09-16T21:22:19Z",
   "findings": [
     {
       "category": "security",
-      "detected_at": "2026-09-15T09:08:31Z",
+      "detected_at": "2026-09-15T09:22:19Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34950752337"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34952115212"
         ],
         "summary": "6 known vulnerability identifier(s) affect dependencies recorded in requirements.txt."
       },
@@ -34,11 +34,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-15T09:08:31Z",
+      "detected_at": "2026-09-15T09:22:19Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34950752337"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34952115212"
         ],
         "summary": "6 known vulnerability identifier(s) affect dependencies recorded in requirements.txt."
       },
@@ -62,7 +62,7 @@
       }
     }
   ],
-  "generated_at": "2026-09-15T09:08:31Z",
+  "generated_at": "2026-09-15T09:22:19Z",
   "policy_digest": "sha256:484b33e502a63c1a94689f682e5a46d9f2b73432edc0b8dc5cce26b45d084fe6",
   "producer": "AtlasReaper311/atlas-dep-audit",
   "public_only": true,
@@ -169,9 +169,9 @@
     }
   ],
   "schema_version": "atlas-control-plane/gardener-finding-bundle/v1",
-  "source_commit": "538b273c48d6f8e58d5049c1a03225d62ee875c9",
-  "source_report_digest": "sha256:259c4ab32288482ebced32fe8fd5985f5c1eb748e60a254caf973b8002f697f0",
+  "source_commit": "0f1056afb6fc860759c7e73d0f6969e1ecc0844c",
+  "source_report_digest": "sha256:fa238159e81acf88174570d0e0ef3e6fbd9dfb0bad60f0c11745d84e30d3dfc9",
   "source_run_attempt": 1,
-  "source_run_id": "34950752337",
+  "source_run_id": "34952115212",
   "source_workflow": ".github/workflows/audit.yml"
 }
