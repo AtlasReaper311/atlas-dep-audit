@@ -58,6 +58,7 @@ jobs:
             --quiet
           python3 -m py_compile audit.py
           python3 -m py_compile private_repository_audit.py
+          python3 -m py_compile public_audit.py
           python3 -m py_compile contract_validation.py
           python3 -m py_compile gardener_adr0016.py
           python3 -m py_compile gardener_candidates.py
@@ -106,8 +107,7 @@ jobs:
           SECRET_WATCH_GITHUB_TOKEN: ${{ secrets.SECRET_WATCH_GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          set +e
-          python3 audit.py \
+          python3 public_audit.py \
             --manifest public-scan-manifest.json \
             --policy policy.json \
             --work-dir work \
@@ -115,10 +115,7 @@ jobs:
             --sbom-dir sbom \
             --provenance-dir provenance \
             --secret-watch-live
-          RAW_AUDIT_EXIT=$?
-          set -e
           test -s reports/report.json
-          printf 'raw_exit=%s\n' "$RAW_AUDIT_EXIT" >> "$GITHUB_OUTPUT"
 
       - name: Evaluate bounded vulnerability risk dispositions
         id: risk_gate
