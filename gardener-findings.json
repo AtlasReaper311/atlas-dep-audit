@@ -1,15 +1,15 @@
 {
   "authority_commit": "eb634e5b19725ecc87902543058a4dd2a2e089c7",
-  "bundle_digest": "sha256:6ae3ffd4a275b1d4cf6e2261535f1e0b29e09bda6f36528a6caf4545f11834a0",
-  "expires_at": "2026-09-16T21:22:19Z",
+  "bundle_digest": "sha256:422a8d1e4d7d95dd99c0e6d0a2fc4a39d7b94a12d79d14a54cf054892a913b4b",
+  "expires_at": "2026-09-23T03:18:50Z",
   "findings": [
     {
       "category": "security",
-      "detected_at": "2026-09-15T09:22:19Z",
+      "detected_at": "2026-09-21T15:18:50Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34952115212"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/35617978066"
         ],
         "summary": "6 known vulnerability identifier(s) affect dependencies recorded in requirements.txt."
       },
@@ -34,11 +34,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-15T09:22:19Z",
+      "detected_at": "2026-09-21T15:18:50Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/34952115212"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/35617978066"
         ],
         "summary": "6 known vulnerability identifier(s) affect dependencies recorded in requirements.txt."
       },
@@ -62,7 +62,7 @@
       }
     }
   ],
-  "generated_at": "2026-09-15T09:22:19Z",
+  "generated_at": "2026-09-21T15:18:50Z",
   "policy_digest": "sha256:484b33e502a63c1a94689f682e5a46d9f2b73432edc0b8dc5cce26b45d084fe6",
   "producer": "AtlasReaper311/atlas-dep-audit",
   "public_only": true,
@@ -114,7 +114,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "1d912f68d5908ee8c752d4bde582a0b99dc41f59",
+      "base_sha": "44df38e8bc469b3cb2594b4f4312c3b036c98084",
       "repository": "AtlasReaper311/atlas-systems"
     },
     {
@@ -170,8 +170,8 @@
   ],
   "schema_version": "atlas-control-plane/gardener-finding-bundle/v1",
   "source_commit": "0f1056afb6fc860759c7e73d0f6969e1ecc0844c",
-  "source_report_digest": "sha256:fa238159e81acf88174570d0e0ef3e6fbd9dfb0bad60f0c11745d84e30d3dfc9",
+  "source_report_digest": "sha256:904aef579dd1835e390e5af837272f857ff545a728c9ced95cdc27471ffea745",
   "source_run_attempt": 1,
-  "source_run_id": "34952115212",
+  "source_run_id": "35617978066",
   "source_workflow": ".github/workflows/audit.yml"
 }
