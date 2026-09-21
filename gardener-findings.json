@@ -1,15 +1,15 @@
 {
   "authority_commit": "eb634e5b19725ecc87902543058a4dd2a2e089c7",
-  "bundle_digest": "sha256:422a8d1e4d7d95dd99c0e6d0a2fc4a39d7b94a12d79d14a54cf054892a913b4b",
-  "expires_at": "2026-09-23T03:18:50Z",
+  "bundle_digest": "sha256:8b451d34cdb77a7df834cf4b8d250ad8eaa56b54de9a7b3c39773ec605bc59a9",
+  "expires_at": "2026-09-23T11:04:46Z",
   "findings": [
     {
       "category": "security",
-      "detected_at": "2026-09-21T15:18:50Z",
+      "detected_at": "2026-09-21T23:04:46Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/35617978066"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/35665777361"
         ],
         "summary": "6 known vulnerability identifier(s) affect dependencies recorded in requirements.txt."
       },
@@ -34,11 +34,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-09-21T15:18:50Z",
+      "detected_at": "2026-09-21T23:04:46Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/35617978066"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/35665777361"
         ],
         "summary": "6 known vulnerability identifier(s) affect dependencies recorded in requirements.txt."
       },
@@ -62,7 +62,7 @@
       }
     }
   ],
-  "generated_at": "2026-09-21T15:18:50Z",
+  "generated_at": "2026-09-21T23:04:46Z",
   "policy_digest": "sha256:484b33e502a63c1a94689f682e5a46d9f2b73432edc0b8dc5cce26b45d084fe6",
   "producer": "AtlasReaper311/atlas-dep-audit",
   "public_only": true,
@@ -74,7 +74,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "daf91a2bd79ad0e57f004c07849c1cb17ee9178e",
+      "base_sha": "4c93b4292cb190937e79d48e23d001cda72eb01d",
       "repository": "AtlasReaper311/atlas-api-public"
     },
     {
@@ -114,7 +114,7 @@
     },
     {
       "base_branch": "main",
-      "base_sha": "44df38e8bc469b3cb2594b4f4312c3b036c98084",
+      "base_sha": "be6e3ec7b76d9034d2761511266c66cc4f7b3514",
       "repository": "AtlasReaper311/atlas-systems"
     },
     {
@@ -170,8 +170,8 @@
   ],
   "schema_version": "atlas-control-plane/gardener-finding-bundle/v1",
   "source_commit": "0f1056afb6fc860759c7e73d0f6969e1ecc0844c",
-  "source_report_digest": "sha256:904aef579dd1835e390e5af837272f857ff545a728c9ced95cdc27471ffea745",
+  "source_report_digest": "sha256:c96c4ac37eff54d564bec476fd3ea732fc25a4024b9c9184b28d7faf4581c327",
   "source_run_attempt": 1,
-  "source_run_id": "35617978066",
+  "source_run_id": "35665777361",
   "source_workflow": ".github/workflows/audit.yml"
 }
