@@ -1,9 +1,9 @@
 {
   "authority_commit": "eb634e5b19725ecc87902543058a4dd2a2e089c7",
-  "bundle_digest": "sha256:429f8f609af7cd3cdddd375d6fa5c89295f4c05c3beb659ad173b2d7010564a4",
-  "expires_at": "2026-10-22T06:04:36Z",
+  "bundle_digest": "sha256:1b901e9d9a965be3b75d6faf6807382505474c2f313be63e23405ea21d0bee55",
+  "expires_at": "2026-10-22T07:07:23Z",
   "findings": [],
-  "generated_at": "2026-10-20T18:04:36Z",
+  "generated_at": "2026-10-20T19:07:23Z",
   "policy_digest": "sha256:484b33e502a63c1a94689f682e5a46d9f2b73432edc0b8dc5cce26b45d084fe6",
   "producer": "AtlasReaper311/atlas-dep-audit",
   "public_only": true,
@@ -110,9 +110,9 @@
     }
   ],
   "schema_version": "atlas-control-plane/gardener-finding-bundle/v1",
-  "source_commit": "0f1056afb6fc860759c7e73d0f6969e1ecc0844c",
-  "source_report_digest": "sha256:c76ab40b90bcb357f4c388751ca8036680df0de3d0967544ed339e8e61bc12e1",
+  "source_commit": "d8b99b729862bf070cec545f225d84ea649399e5",
+  "source_report_digest": "sha256:1641afe1eccc7d1bb291d030dc9e408117f903a7709e52fab47850a853baafe3",
   "source_run_attempt": 1,
-  "source_run_id": "39471456275",
+  "source_run_id": "39480606792",
   "source_workflow": ".github/workflows/audit.yml"
 }
