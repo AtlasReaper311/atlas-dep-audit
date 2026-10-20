@@ -5,7 +5,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = REPO_ROOT / ".github" / "workflows" / "audit.yml"
-RISK_AUTHORITY_SHA = "32662e26b6fb0550d6fed96434ecbd6713f09668"
+CI_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "ci.yml"
+RISK_AUTHORITY_SHA = "6367ba454cfe57a0f1b72b90726c02b6ec58d1c0"
 GARDENER_AUTHORITY_SHA = "eb634e5b19725ecc87902543058a4dd2a2e089c7"
 
 
@@ -35,6 +36,13 @@ class ScheduledAuditWorkflowTests(unittest.TestCase):
         risk = step_block(self.text, "Check out reviewed vulnerability risk authority")
         self.assertIn(f"ref: {GARDENER_AUTHORITY_SHA}", gardener)
         self.assertIn("path: .atlas-infra", gardener)
+        self.assertIn(f"ref: {RISK_AUTHORITY_SHA}", risk)
+        self.assertIn("path: .atlas-infra-risk", risk)
+
+    def test_pull_request_ci_uses_the_current_risk_authority(self) -> None:
+        ci_text = CI_WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn(f"RISK_AUTHORITY_SHA: {RISK_AUTHORITY_SHA}", ci_text)
+        risk = step_block(ci_text, "Check out reviewed vulnerability risk authority")
         self.assertIn(f"ref: {RISK_AUTHORITY_SHA}", risk)
         self.assertIn("path: .atlas-infra-risk", risk)
 
