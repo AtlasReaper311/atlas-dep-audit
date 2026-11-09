@@ -1,15 +1,15 @@
 {
   "authority_commit": "eb634e5b19725ecc87902543058a4dd2a2e089c7",
-  "bundle_digest": "sha256:355f2bd9a15099ccdac47b84a67456ffdb0181a7c4d9bc7b7bdb0c954a128d2b",
-  "expires_at": "2026-11-04T06:47:29Z",
+  "bundle_digest": "sha256:3dee833742fc19522cdd52fb6fe2cf472f34d32e92d1278d3d408419b69ff3c8",
+  "expires_at": "2026-11-11T07:05:36Z",
   "findings": [
     {
       "category": "security",
-      "detected_at": "2026-11-02T18:47:29Z",
+      "detected_at": "2026-11-09T19:05:36Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/41503756864"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/42679814193"
         ],
         "summary": "8 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
       },
@@ -24,7 +24,7 @@
               "dependency": "wrangler",
               "section": "devDependencies",
               "target_spec": "^4.149.0",
-              "target_version": "4.156.2",
+              "target_version": "4.159.0",
               "vulnerability_ids": [
                 "GHSA-2m5v-pch6-74hx",
                 "GHSA-4qv8-2p9j-2685",
@@ -41,7 +41,7 @@
           "lockfile_file": "package-lock.json",
           "manifest_file": "package.json",
           "npm_version": "10.9.3",
-          "target_lockfile_sha256": "sha256:6aba7196f884b5768035dbafb93804abee41b0efe8af6f744c8b728cf3a44513",
+          "target_lockfile_sha256": "sha256:30bdcb29ea13756cfea4d573db033c389a02269cd695d8b520b24b1bfab3129c",
           "target_manifest_sha256": "sha256:df63eba9f9f09ead6bf86e10a095746fc609f42ae7c75cf9efc2eefa638b8916",
           "transitive_updates": [],
           "vulnerability_ids": [
@@ -73,11 +73,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-11-02T18:47:29Z",
+      "detected_at": "2026-11-09T19:05:36Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/41503756864"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/42679814193"
         ],
         "summary": "9 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
       },
@@ -102,11 +102,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-11-02T18:47:29Z",
+      "detected_at": "2026-11-09T19:05:36Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/41503756864"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/42679814193"
         ],
         "summary": "9 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
       },
@@ -131,11 +131,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-11-02T18:47:29Z",
+      "detected_at": "2026-11-09T19:05:36Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/41503756864"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/42679814193"
         ],
         "summary": "1 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
       },
@@ -160,11 +160,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-11-02T18:47:29Z",
+      "detected_at": "2026-11-09T19:05:36Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/41503756864"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/42679814193"
         ],
         "summary": "9 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
       },
@@ -189,11 +189,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-11-02T18:47:29Z",
+      "detected_at": "2026-11-09T19:05:36Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/41503756864"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/42679814193"
         ],
         "summary": "9 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
       },
@@ -218,11 +218,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-11-02T18:47:29Z",
+      "detected_at": "2026-11-09T19:05:36Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/41503756864"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/42679814193"
         ],
         "summary": "9 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
       },
@@ -247,11 +247,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-11-02T18:47:29Z",
+      "detected_at": "2026-11-09T19:05:36Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/41503756864"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/42679814193"
         ],
         "summary": "9 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
       },
@@ -276,11 +276,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-11-02T18:47:29Z",
+      "detected_at": "2026-11-09T19:05:36Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/41503756864"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/42679814193"
         ],
         "summary": "9 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
       },
@@ -305,11 +305,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-11-02T18:47:29Z",
+      "detected_at": "2026-11-09T19:05:36Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/41503756864"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/42679814193"
         ],
         "summary": "9 known vulnerability identifier(s) affect dependencies recorded in worker/package-lock.json."
       },
@@ -334,11 +334,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-11-02T18:47:29Z",
+      "detected_at": "2026-11-09T19:05:36Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/41503756864"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/42679814193"
         ],
         "summary": "9 known vulnerability identifier(s) affect dependencies recorded in worker/package-lock.json."
       },
@@ -363,11 +363,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-11-02T18:47:29Z",
+      "detected_at": "2026-11-09T19:05:36Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/41503756864"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/42679814193"
         ],
         "summary": "10 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
       },
@@ -392,11 +392,11 @@
     },
     {
       "category": "security",
-      "detected_at": "2026-11-02T18:47:29Z",
+      "detected_at": "2026-11-09T19:05:36Z",
       "evidence": {
         "redacted": true,
         "references": [
-          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/41503756864"
+          "https://github.com/AtlasReaper311/atlas-dep-audit/actions/runs/42679814193"
         ],
         "summary": "9 known vulnerability identifier(s) affect dependencies recorded in package-lock.json."
       },
@@ -420,7 +420,7 @@
       }
     }
   ],
-  "generated_at": "2026-11-02T18:47:29Z",
+  "generated_at": "2026-11-09T19:05:36Z",
   "policy_digest": "sha256:484b33e502a63c1a94689f682e5a46d9f2b73432edc0b8dc5cce26b45d084fe6",
   "producer": "AtlasReaper311/atlas-dep-audit",
   "public_only": true,
@@ -528,8 +528,8 @@
   ],
   "schema_version": "atlas-control-plane/gardener-finding-bundle/v1",
   "source_commit": "d8b99b729862bf070cec545f225d84ea649399e5",
-  "source_report_digest": "sha256:b7015b6c478a5bf9c837d4d2c1850a4a75264a7c7a427ad7e92c9c83c31a9c90",
+  "source_report_digest": "sha256:7bbcaeb294d421f055b8a896af401596797e0134e6279e59cdac6c22b1d0fa35",
   "source_run_attempt": 1,
-  "source_run_id": "41503756864",
+  "source_run_id": "42679814193",
   "source_workflow": ".github/workflows/audit.yml"
 }
